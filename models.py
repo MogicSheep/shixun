@@ -58,7 +58,7 @@ class Commodity(db.Model):
     updateat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
     deleteat = db.Column(db.DateTime)
 
-     def insert(self):
+    def insert(self):
         db.session.add(self)
         db.session.commit()
     def delete(self):
