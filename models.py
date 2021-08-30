@@ -1,9 +1,21 @@
 # coding: utf-8
 from flask_sqlalchemy import SQLAlchemy
 
+database_name="db_v1"
+database_path = os.environ.get('DATABASE_URL',"mysql://{}:{}@{}/{}".format('yxn', 'bilibili','118.195.233.143:3306', database_name))
 
 db = SQLAlchemy()
 
+'''
+setup_db(app)
+    binds a flask application and a SQLAlchemy service
+'''
+def setup_db(app, database_path=database_path):
+    app.config["SQLALCHEMY_DATABASE_URI"] = database_path
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
+    db.app = app
+    db.init_app(app)
+    db.create_all()
 
 
 class Addres(db.Model):
