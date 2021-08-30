@@ -1,6 +1,9 @@
 # coding: utf-8
+from sqlalchemy import Column, String, create_engine,Integer,ForeignKey
 from flask_sqlalchemy import SQLAlchemy
-
+from datetime import datetime
+import json
+import os
 database_name="db_v1"
 database_path = os.environ.get('DATABASE_URL',"mysql://{}:{}@{}/{}".format('yxn', 'bilibili','118.195.233.143:3306', database_name))
 
@@ -50,9 +53,29 @@ class Commodity(db.Model):
     title = db.Column(db.String(50), nullable=False, server_default=db.FetchedValue())
     content = db.Column(db.String(500), nullable=False, server_default=db.FetchedValue())
     tag = db.Column(db.String(500), nullable=False, server_default=db.FetchedValue())
+    seller = db.Column(db.Integer, nullable=False)
     createat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
     updateat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
     deleteat = db.Column(db.DateTime)
+
+     def insert(self):
+        db.session.add(self)
+        db.session.commit()
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+    def update(self):
+        db.session.commit()
+    
+    def format(self):
+        return {
+        'id': self.id,
+        'title': self.title,
+        'tag': self.tag,
+        'price': self.price,
+        'seller': self.origin,
+        'content':self.content,
+        }
 
 
 
@@ -81,6 +104,25 @@ class Order(db.Model):
     updateat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
     deleteat = db.Column(db.DateTime)
 
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def update(self):
+        db.session.commit()
+
+    def format(self):
+        return {
+        'id': self.id,
+        'seller': self.seller,
+        'buyer': self.buyer,
+        'commodity': self.commodity,
+        'createat': self.createat
+        } 
 
 
 class User(db.Model):
@@ -94,3 +136,10 @@ class User(db.Model):
     createat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
     updateat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
     deleteat = db.Column(db.DateTime)
+
+    def __repr__(self):
+        return "<User %r>" % self.name
+
+    def check_pwd(self, pwd):
+        from werkzeug.security import check_password_hash
+        return check_password_hash(self.pwd, pwd)
