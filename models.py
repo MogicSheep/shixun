@@ -169,6 +169,17 @@ class User(db.Model):
     def check_pwd(self, pwd):
         from werkzeug.security import check_password_hash
         return check_password_hash(self.pwd, pwd)
+    
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def update(self):
+        db.session.commit()
 
     def format(self):
         return {
