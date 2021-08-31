@@ -27,9 +27,16 @@ class Address(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
+<<<<<<< HEAD
     city = db.Column(db.String(20), nullable=False, server_default=db.FetchedValue())
     name = db.Column(db.String(20), nullable=False, server_default=db.FetchedValue())
     phone = db.Column(db.BigInteger, nullable=False)
+=======
+    name = db.Column(db.String(50, 'utf8_general_ci'), nullable=False)
+    phone = db.Column(db.String(15), nullable=False)
+    tags = db.Column(db.String(100))
+    isdefault = db.Column(db.Integer)
+>>>>>>> 61df7ec11cc24e78b23ef126d528beea9bf7fd80
     content = db.Column(db.String(200), nullable=False, server_default=db.FetchedValue())
     createat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
     updateat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
@@ -151,11 +158,17 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50, 'utf8_general_ci'), nullable=False, server_default=db.FetchedValue())
-    phone = db.Column(db.BigInteger, nullable=False)
+    phone = db.Column(db.String(15), nullable=False)
     region = db.Column(db.String(50), nullable=False, server_default=db.FetchedValue())
+<<<<<<< HEAD
     signature = db.Column(db.String(100), nullable=False, server_default=db.FetchedValue())
     pwd = db.Column(db.String(50))
     default_address = db.Column(db.Integer)
+=======
+    sex = db.Column(db.Integer)
+    pwd = db.Column(db.String(50))
+    signature = db.Column(db.String(100))
+>>>>>>> 61df7ec11cc24e78b23ef126d528beea9bf7fd80
     createat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
     updateat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
     deleteat = db.Column(db.DateTime)

@@ -155,6 +155,8 @@ def create_app(test_config=None):
             'deleted': marbre.format()
         })
 
+    # @app.route('/product/add', methods=['POST'])
+    # def add_product
     return app
 
 app = create_app()
