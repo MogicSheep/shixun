@@ -19,6 +19,49 @@ def create_app(test_config=None):
             'success':True,
             'marbre': 'welcome'
         })
+
+    #登录与注册
+    @app.route('/api/v1/user/login/<user_phone>/<user_code>', methods = ['POST'])
+    def get_phone(user_phone, user_code):
+        message = User.query.get(user_phone)
+        return jsonify({
+            'Success' : True,
+            'Message' : message.format()
+        })
+
+    #请求发送验证码
+    @app.route('/api/v1/user/code/<user_phone>', methods = ['GET'])
+    def get_code(user_phone):
+        message = User.query.get(user_phone)
+        return jsonify({
+            'Success' : True,
+            'Message' : message.format()
+        })
+
+    #修改个人信息
+    @app.route('/api/v1/user/set_default_address/<user_id>', methods=['POST'])
+    def change_profile(user_id):
+        body = request.get_json()
+
+        new_name = body.get("name", None)
+        new_position = body.get("position", None)
+        new_sex = body.get("sex", None)
+        new_signature = body.get("signature", None)
+
+        user = User.query.get(user_id)
+        try:
+            user.name = new_name
+            user.region = new_position
+            user.sex = new_sex
+            user.signature = new_signature
+            user.insert()
+        except:
+            print(" ")
+        return jsonify({
+            'Success': True,
+            'user': user.format()
+        })
+
     #获取个人信息
     @app.route('/api/v1/user/get_profile/<user_id>',methods=['GET'])
     def get_profile(user_id):
