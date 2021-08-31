@@ -1,5 +1,6 @@
 # coding: utf-8
 from sqlalchemy import Column, String, create_engine,Integer,ForeignKey
+from werkzeug.exceptions import default_exceptions
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import json
@@ -21,16 +22,36 @@ def setup_db(app, database_path=database_path):
     db.create_all()
 
 
-class Addres(db.Model):
+class Address(db.Model):
     __tablename__ = 'address'
 
     id = db.Column(db.Integer, primary_key=True)
     user = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
+    city = db.Column(db.String(20), nullable=False, server_default=db.FetchedValue())
+    name = db.Column(db.String(20), nullable=False, server_default=db.FetchedValue())
+    phone = db.Column(db.BigInteger, nullable=False)
     content = db.Column(db.String(200), nullable=False, server_default=db.FetchedValue())
     createat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
     updateat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
     deleteat = db.Column(db.DateTime)
 
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+    def update(self):
+        db.session.commit()
+    
+    def format(self):
+        return {
+        'id': self.id,
+        'name': self.name,
+        'phone': self.phone,
+        'city': self.city,
+        'content':self.content
+        }
 
 
 class Comment(db.Model):
@@ -132,7 +153,9 @@ class User(db.Model):
     name = db.Column(db.String(50, 'utf8_general_ci'), nullable=False, server_default=db.FetchedValue())
     phone = db.Column(db.BigInteger, nullable=False)
     region = db.Column(db.String(50), nullable=False, server_default=db.FetchedValue())
+    signature = db.Column(db.String(100), nullable=False, server_default=db.FetchedValue())
     pwd = db.Column(db.String(50))
+    default_address = db.Column(db.Integer)
     createat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
     updateat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
     deleteat = db.Column(db.DateTime)
@@ -143,3 +166,12 @@ class User(db.Model):
     def check_pwd(self, pwd):
         from werkzeug.security import check_password_hash
         return check_password_hash(self.pwd, pwd)
+
+    def format(self):
+        return {
+        'id': self.id,
+        'name': self.name,
+        'region': self.region,
+        'signature': self.signature,
+        'createat': self.createat
+        } 
