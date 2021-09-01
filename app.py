@@ -1,11 +1,12 @@
 import os
 from flask import Flask,jsonify,request,abort
 from werkzeug.wrappers import PlainRequest
-from models import Address,User, setup_db, Commodity
 from flask_cors import CORS
+from models import Address,User, setup_db, Commodity
 
 import pymysql
 pymysql.install_as_MySQLdb()
+
 
 def create_app(test_config=None):
 
@@ -198,11 +199,25 @@ def create_app(test_config=None):
             'deleted': marbre.format()
         })
 
-    # @app.route('/product/add', methods=['POST'])
-    # def add_product
+    # # 发布信息
+    # @app.route('/api/v1/product/add/<user_id>', methods=['POST'])
+    # def add_product(user_id):
+    #     body = request.get_json()
+
+    #     return 
     return app
+
 
 app = create_app()
 
+from flask_login import LoginManager
+login_manager = LoginManager(app)
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+
 if __name__ == '__main__':
+    #nonlocal app
     app.run()
