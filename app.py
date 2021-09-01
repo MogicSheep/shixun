@@ -116,7 +116,7 @@ def create_app(test_config=None):
     #获取所有收货地址
     @app.route('/api/v1/user/set_default_address/<user_id>',methods=['GET'])
     def post_all_address(user_id):
-        addresses = Address.query.filter(user = user_id).all()
+        addresses = Address.query.filter(Address.user == user_id).all()
         formatted_address = [address.format() for address in addresses] 
         return jsonify({
             'Success':True,
