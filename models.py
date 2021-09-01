@@ -5,7 +5,10 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import json
 import os
-database_name="db_v1"
+from flask_login import UserMixin
+from werkzeug.security import check_password_hash, generate_password_hash
+from sqlalchemy.sql import func
+database_name="db_v2"
 database_path = os.environ.get('DATABASE_URL',"mysql://{}:{}@{}/{}".format('yxn', 'bilibili','118.195.233.143:3306', database_name))
 
 db = SQLAlchemy()
@@ -32,8 +35,8 @@ class Address(db.Model):
     phone = db.Column(db.String(15), nullable=False)
     tags = db.Column(db.String(100))
     content = db.Column(db.String(200), nullable=False, server_default=db.FetchedValue())
-    createat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
-    updateat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
+    createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
+    updateat = db.Column(db.TIMESTAMP, nullable=False)
     deleteat = db.Column(db.DateTime)
 
     def insert(self):
@@ -62,8 +65,8 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     commodity = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
     content = db.Column(db.String(500), nullable=False, server_default=db.FetchedValue())
-    createat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
-    updateat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
+    createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
+    updateat = db.Column(db.TIMESTAMP, nullable=False)
     deleteat = db.Column(db.DateTime)
 
 
@@ -77,8 +80,8 @@ class Commodity(db.Model):
     content = db.Column(db.String(500), nullable=False, server_default=db.FetchedValue())
     tag = db.Column(db.String(500), nullable=False, server_default=db.FetchedValue())
     seller = db.Column(db.Integer, nullable=False)
-    createat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
-    updateat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
+    createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
+    updateat = db.Column(db.TIMESTAMP, nullable=False)
     deleteat = db.Column(db.DateTime)
 
     def insert(self):
@@ -108,8 +111,8 @@ class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(500), nullable=False)
     commodity = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
-    createat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
-    updateat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
+    createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
+    updateat = db.Column(db.TIMESTAMP, nullable=False)
     deleteat = db.Column(db.DateTime)
 
 
@@ -123,8 +126,8 @@ class Order(db.Model):
     seller = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
     buyer = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
     commodity = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
-    createat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
-    updateat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
+    createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
+    updateat = db.Column(db.TIMESTAMP, nullable=False)
     deleteat = db.Column(db.DateTime)
 
     def insert(self):
@@ -148,7 +151,7 @@ class Order(db.Model):
         } 
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -159,15 +162,17 @@ class User(db.Model):
     pwd = db.Column(db.String(50))
     sex = db.Column(db.Integer)
     default_address = db.Column(db.Integer)
-    createat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
-    updateat = db.Column(db.DateTime, nullable=False, server_default=db.FetchedValue())
+    createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
+    updateat = db.Column(db.TIMESTAMP, nullable=False)
     deleteat = db.Column(db.DateTime)
 
     def __repr__(self):
         return "<User %r>" % self.name
 
+    def set_pwd(self, pwd):
+        self.pwd = generate_password_hash(pwd)
+
     def check_pwd(self, pwd):
-        from werkzeug.security import check_password_hash
         return check_password_hash(self.pwd, pwd)
     
     def insert(self):
@@ -190,3 +195,5 @@ class User(db.Model):
         'signature': self.signature,
         'createat': self.createat
         } 
+
+
