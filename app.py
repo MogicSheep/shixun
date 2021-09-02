@@ -2,7 +2,7 @@ import os
 from flask import Flask,jsonify,request,abort
 from werkzeug.wrappers import PlainRequest
 from flask_cors import CORS
-from models import Address,User, setup_db, Commodity
+from models import Address,User, setup_db, Commodity, Comment
 
 import pymysql
 pymysql.install_as_MySQLdb()
@@ -137,6 +137,40 @@ def create_app(test_config=None):
         return jsonify({
             'Success':True,
             'user': user.format()
+        })
+    #查看单个商品信息
+    @app.route('/api/v1/product/show/<commodity_id>',methods=['GET'])
+    def show_commodity_info(commodity_id):
+        info = Commodity.query.get(commodity_id)
+        return jsonify({
+            'Success':True,
+            'Info': info.format()
+        })
+    
+    #查看单个商品评论
+    @app.route('/api/v1/product/comments/<commodity_id>',methods=['GET'])
+    def show_commodity_comments(commodity_id):
+        comments = Comment.query.filter(Comment.commodity == commodity_id).all()
+        formatted_comments = [comment.format() for comment in comments] 
+        return jsonify({
+            'Success':True,
+            'comments': formatted_comments
+        })
+    #评论商品信息
+    @app.route('/api/v1/product/add_comment',methods=['POST'])
+    def add_comment():
+        body = request.get_json()
+        product_id = body.get("commodity",None)
+        content = body.get("content",None)
+        new_id = Comment.query(func.max(Comment.id)).first() + 1
+        comment = Comment(id = new_id, commodity = product_id, content = content)
+        try:
+            comment.insert()
+        except:
+            print(" ")
+        return jsonify({
+            'Success':True,
+            'Comment': comment.format
         })
 
     @app.route('/marbres',methods=['POST'])
