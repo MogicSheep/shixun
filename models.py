@@ -68,7 +68,23 @@ class Comment(db.Model):
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
     updateat = db.Column(db.TIMESTAMP)
     deleteat = db.Column(db.DateTime)
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
 
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def update(self):
+        db.session.commit()
+
+    def format(self):
+        return {
+        'id': self.id,
+        'commodity': self.commodity,
+        'content': self.content
+        }
 
 
 class Commodity(db.Model):
