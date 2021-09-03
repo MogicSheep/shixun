@@ -2,11 +2,12 @@ import os
 from flask import Flask,jsonify,request,abort
 from werkzeug.wrappers import PlainRequest
 from flask_cors import CORS
-from models import Address,User, setup_db, Commodity
+from models import db, Address,User, setup_db, Commodity, Image
 
 import pymysql
 pymysql.install_as_MySQLdb()
 
+import pickle
 
 def create_app(test_config=None):
 
@@ -199,17 +200,48 @@ def create_app(test_config=None):
             'deleted': marbre.format()
         })
 
-    # # 发布信息
-    # @app.route('/api/v1/product/add/<user_id>', methods=['POST'])
+    # 发布信息
+    # @app.route('/api/v1/product/add', methods=['POST'])
     # def add_product(user_id):
     #     body = request.get_json()
 
-    #     return 
+    #     return
+
+    # 上传图片
+    @app.route('/api/v1/media/upload_image', methods = ['POST'])
+    def upload_image():
+        imgfile = request.files['image'].read()
+        print(type(imgfile))
+        new_img = Image(content = imgfile)
+        # print(new_img.content)
+        try:
+            db.session.add(new_img)
+            db.session.flush()
+            db.session.commit()
+        except Exception as e:
+            print("--------------------------------------")
+            print("[ERROR] at upload img: \n%s" % repr(e))
+            print("--------------------------------------")
+
+        print(new_img.id)
+        return jsonify({
+            'id': new_img.id
+        })
+
+    # 购买物品
+    # @app.route('/api/v1/order/buy', methods = ['POST'])
+    # def bug():
+    #     body = request.get_json()
+    #     com_id = body.get['id']
+    #     # TODO: user id!
+    #     user_id = 123
+
     return app
 
 
 app = create_app()
-
+app.debug = True
+app.config['DEBUG'] = True
 from flask_login import LoginManager
 login_manager = LoginManager(app)
 login_manager.init_app(app)
@@ -219,5 +251,4 @@ def load_user(id):
     return User.query.get(int(id))
 
 if __name__ == '__main__':
-    #nonlocal app
-    app.run()
+    app.run(debug=True)

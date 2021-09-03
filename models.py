@@ -36,7 +36,7 @@ class Address(db.Model):
     tags = db.Column(db.String(100))
     content = db.Column(db.String(200), nullable=False, server_default=db.FetchedValue())
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
-    updateat = db.Column(db.TIMESTAMP, nullable=False)
+    updateat = db.Column(db.TIMESTAMP)
     deleteat = db.Column(db.DateTime)
 
     def insert(self):
@@ -66,7 +66,7 @@ class Comment(db.Model):
     commodity = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
     content = db.Column(db.String(500), nullable=False, server_default=db.FetchedValue())
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
-    updateat = db.Column(db.TIMESTAMP, nullable=False)
+    updateat = db.Column(db.TIMESTAMP)
     deleteat = db.Column(db.DateTime)
 
 
@@ -81,7 +81,7 @@ class Commodity(db.Model):
     tag = db.Column(db.String(500), nullable=False, server_default=db.FetchedValue())
     seller = db.Column(db.Integer, nullable=False)
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
-    updateat = db.Column(db.TIMESTAMP, nullable=False)
+    updateat = db.Column(db.TIMESTAMP)
     deleteat = db.Column(db.DateTime)
 
     def insert(self):
@@ -109,10 +109,10 @@ class Image(db.Model):
     __tablename__ = 'images'
 
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String(500), nullable=False)
-    commodity = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
+    content = db.Column(db.LargeBinary(length=(2**32)-1))
+    commodity = db.Column(db.Integer, nullable=True, server_default=db.FetchedValue())
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
-    updateat = db.Column(db.TIMESTAMP, nullable=False)
+    updateat = db.Column(db.TIMESTAMP)
     deleteat = db.Column(db.DateTime)
 
 
@@ -127,7 +127,7 @@ class Order(db.Model):
     buyer = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
     commodity = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
-    updateat = db.Column(db.TIMESTAMP, nullable=False)
+    updateat = db.Column(db.TIMESTAMP)
     deleteat = db.Column(db.DateTime)
 
     def insert(self):
@@ -163,7 +163,7 @@ class User(db.Model, UserMixin):
     sex = db.Column(db.Integer)
     default_address = db.Column(db.Integer)
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
-    updateat = db.Column(db.TIMESTAMP, nullable=False)
+    updateat = db.Column(db.TIMESTAMP)
     deleteat = db.Column(db.DateTime)
 
     def __repr__(self):
