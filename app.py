@@ -10,7 +10,7 @@ pymysql.install_as_MySQLdb()
 import pickle
 
 from module.product import product_add
-from models.media import media_upload_image
+from module.media import media_upload_image
 def create_app(test_config=None):
 
     app = Flask(__name__)
