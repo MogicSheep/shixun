@@ -9,6 +9,8 @@ pymysql.install_as_MySQLdb()
 
 import pickle
 
+from module.product import product_add
+from models.media import media_upload_image
 def create_app(test_config=None):
 
     app = Flask(__name__)
@@ -174,93 +176,24 @@ def create_app(test_config=None):
             'Comment': comment.format
         })
 
-    @app.route('/marbres',methods=['POST'])
-    def post_marbre():
-        body = request.get_json()
-        new_title = body.get("title",None)
-        new_image = body.get("image",None)
-        new_price = body.get("price",None)
-        new_seller = body.get("seller",None)
-        new_content = body.get("content",None)
-
-        try:
-            marbre = Commodity(title = new_title, price=new_price, seller=new_origin, content=new_content)
-            marbre.insert()
-        except:
-            print(" ")
-        return jsonify({
-            'Success':True,
-            'Marbre': marbre.format()
-        })
-
-    @app.route('/marbres',methods=['GET'])
-    def get_marbre():
-        marbres = Commodity.query.all()
-        formatted_marbres = [marbre.format() for marbre in marbres] 
-        return jsonify({
-            'Success':True,
-            'marbres': formatted_marbres
-        })
-
-    @app.route('/marbres/<marbre_id>',methods=['PATCH'])
-    def patch_marbre(marbre_id):
-        body = request.get_json()
-        marbre = Commodity.query.get(marbre_id)
-        if(body.get("title")):
-            marbre.title = body.get("title")
-        # if(body.get("image")):
-        #     marbre.image = body.get("image")
-        if(body.get("price")):
-            marbre.price = body.get("price")
-        if(body.get("seller")):
-            marbre.origin = body.get("seller")
-        if(body.get("content")):
-            marbre.description = body.get("content")
-        try:
-            marbre.insert()
-        except:
-            print(" ")
-        return jsonify({
-            'Success':True,
-            'Marbre': marbre.format()
-        })
-    
-    @app.route('/marbres/<marbre_id>',methods=['DELETE'])
-    def delete_marbre(marbre_id):
-        marbre = Commodity.query.get(marbre_id)
-        marbre.delete()
-        return jsonify({
-            'success': True,
-            'deleted': marbre.format()
-        })
-
     # 发布信息
-    # @app.route('/api/v1/product/add', methods=['POST'])
-    # def add_product(user_id):
-    #     body = request.get_json()
-
-    #     return
+    @app.route('/api/v1/product/add', methods=['POST'])
+    def add_product():
+        success, retid = product_add(request)
+        return jsonify({
+            'success' : success,
+            'id': retid
+        })
 
     # 上传图片
     @app.route('/api/v1/media/upload_image', methods = ['POST'])
     def upload_image():
-        imgfile = request.files['image'].read()
-        print(type(imgfile))
-        new_img = Image(content = imgfile)
-        # print(new_img.content)
-        try:
-            db.session.add(new_img)
-            db.session.flush()
-            db.session.commit()
-        except Exception as e:
-            print("--------------------------------------")
-            print("[ERROR] at upload img: \n%s" % repr(e))
-            print("--------------------------------------")
-
-        print(new_img.id)
+        success, retid = media_upload_image(request)
         return jsonify({
-            'id': new_img.id
+            'success' : success,
+            'id': retid
         })
+        
 
     # 购买物品
     # @app.route('/api/v1/order/buy', methods = ['POST'])
