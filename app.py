@@ -1,8 +1,9 @@
 import os
-from flask import Flask,jsonify,request,abort
+from flask import Flask,jsonify,request,abort, redirect, render_template, url_for, flash
 from werkzeug.wrappers import PlainRequest
 from flask_cors import CORS
 from models import db, Address,User, setup_db, Commodity, Image
+from flask_login import current_user, login_user, logout_user, login_required
 
 import pymysql
 pymysql.install_as_MySQLdb()
@@ -24,26 +25,77 @@ def create_app(test_config=None):
             'marbre': 'welcome'
         })
 
-    #登录与注册
-    @app.route('/api/v1/user/login/<user_phone>/<user_code>', methods = ['POST'])
-    def get_phone(user_phone, user_code):
-        message = User.query.get(user_phone)
-        return jsonify({
-            'Success' : True,
-            'Message' : message.format()
-        })
+    #用户注册
+    @app.route('/api/v1/user/register', methods = ['GET', 'POST'])
+    def register():
+        if current_user.is_authenticated:
+            return redirect(url_for('get_test')) #已登录用户重定向到主页 /
+        else:
+            if request.method == 'POST':
+                user_phone = request.form.get("phone")
+                user_pwd = request.form.get("pwd")
+
+                user = User.query.filter(User.phone == user_phone).first()
+                if user is not None:
+                    flash('The phone number is currently registered')
+                    return redirect(url_for('login')) #已注册用户重定向到登录页面 /api/v1/user/login
+                else:
+                    new_user = User(phone = user_phone)
+                    new_user.set_pwd(user_pwd)
+                    new_user.insert()
+                    login_user(user)
+                    return redirect(url_for('login')) #已注册用户重定向到登录页面 /api/v1/user/login
+        return render_template('register.html') #填register页面
+
+    #用户登录
+    @app.route('/api/v1/user/login', methods = ['GET', 'POST'])
+    def login():
+        if current_user.is_authenticated:
+            return redirect(url_for('get_test')) #已登录用户重定向到主页 /
+        else:
+            if request.method == 'POST':
+                user_phone = request.form.get("phone")
+                user_pwd = request.form.get("pwd")
+
+                user = User.query.filter(User.phone == user_phone).first()
+                if user is not None:
+                    if user.pwd is None:
+                        flash('Register your account')
+                        return redirect(url_for('register')) #未注册用户重定向到注册页面 /api/v1/user/register
+                    else:
+                        if user.check(user_pwd):
+                            login_user(user)
+                            return redirect(url_for('get_test')) #登录用户重定向到主页 /
+                flash('Username or password is incorrect')
+                return redirect(url_for('login')) #密码或账户错误用户重定向到登录页面 /api/v1/user/login
+        return render_template('login.html') #填login页面
+
+    #用户登出
+    @app.route('/api/v1/user/logout')
+    @login_required
+    def logout():
+        logout_user()
+        return redirect(url_for('get_test')) #登出用户重定向到主页 /
+
+    # @app.route('/api/v1/user/login/<user_phone>/<user_code>', methods = ['POST'])
+    # def get_phone(user_phone, user_code):
+    #     message = User.query.get(user_phone)
+    #     return jsonify({
+    #         'Success' : True,
+    #         'Message' : message.format()
+    #     })
 
     #请求发送验证码
-    @app.route('/api/v1/user/code/<user_phone>', methods = ['GET'])
-    def get_code(user_phone):
-        message = User.query.get(user_phone)
-        return jsonify({
-            'Success' : True,
-            'Message' : message.format()
-        })
+    # @app.route('/api/v1/user/code/<user_phone>', methods = ['GET'])
+    # def get_code(user_phone):
+    #     message = User.query.get(user_phone)
+    #     return jsonify({
+    #         'Success' : True,
+    #         'Message' : message.format()
+    #     })
 
     #修改个人信息
-    @app.route('/api/v1/user/set_default_address/<user_id>', methods=['POST'])
+    @app.route('/api/v1/user/set_default_address/<user_id>', methods = ['POST'])
     def change_profile(user_id):
         body = request.get_json()
 
@@ -65,6 +117,7 @@ def create_app(test_config=None):
             'Success': True,
             'user': user.format()
         })
+
 
     #获取个人信息
     @app.route('/api/v1/user/get_profile/<user_id>',methods=['GET'])
