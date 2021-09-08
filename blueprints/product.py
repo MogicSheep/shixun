@@ -53,33 +53,37 @@ def add_comment():
 # 发布信息
 @product_bp.route('/api/v1/product/add', methods=['POST'])
 def add_product():
-    if not current_user.is_authenticated:
-        return jsonify({
-            'success' : False,
-            'id': -1
-        })
+    # TODO:
+    # if not current_user.is_authenticated:
+    #     return jsonify({
+    #         'success' : False,
+    #         'id': -1
+    #     })
 
-    body = request.get_json()
-    new_content = body.get('content')
-    new_price = int(body.get('price'))
-    new_tags = pickle.dumps(list(body.get('tags')))
+    new_content = request.form.get('content')
+    new_price = int(request.form.get('price'))
+    # new_tags = pickle.dumps(list(request.form.get('tags')))
+    new_tags = request.form.get('tags')
     # TODO : user id!
-    new_seller = current_user.id
-    new_title = str(body.get('title'))
+    new_seller = 123
+    new_title = str(request.form.get('title'))
     new_commodity = Commodity(price = new_price, title = new_title, content = new_content,
             tag = new_tags, seller = new_seller)
-    image_urls = list(body.get('images_urls'))
+    image_urls = request.form.get('images_urls').split(',')
     success = True
     try:
         db.session.add(new_commodity)
         db.session.flush()
         for url in image_urls:
-            row = Image.query.filter(Image.id==url).first()
+            row = Image.query.filter(Image.id==int(url)).first()
+            logger.debug("url: %d" % int(url))
+            logger.debug(str(row))
             row.commodity = new_commodity.id
         db.session.commit()
     except Exception as e:
         logger.exception('Add commedity failed!')
         success = False
+        db.session.rollback()
 
     return jsonify({
         'success' : success,

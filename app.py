@@ -17,6 +17,7 @@ import pymysql
 pymysql.install_as_MySQLdb()
 
 import pickle
+import logging
 
 def create_app(test_config=None):
 
@@ -55,6 +56,11 @@ login_manager.init_app(app)
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+
+logging.basicConfig(level = logging.DEBUG,format = '%(asctime)s - %(name)s - [%(levelname)s]: %(message)s')
+logger = logging.getLogger(__name__)
+logger.info('Init finished!')
 
 if __name__ == '__main__':
     app.run(debug=True)

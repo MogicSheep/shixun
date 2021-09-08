@@ -25,6 +25,7 @@ def upload_image():
     except Exception as e:
         logger.exception('Uploading image failed!')
         success = False
+        db.session.rollback()
     
     return jsonify({
         'success' : success,

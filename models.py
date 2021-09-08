@@ -30,11 +30,11 @@ class Address(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
-    city = db.Column(db.String(20), nullable=False, server_default=db.FetchedValue())
-    name = db.Column(db.String(50, 'utf8_general_ci'), nullable=False)
-    phone = db.Column(db.String(15), nullable=False)
-    tags = db.Column(db.String(100))
-    content = db.Column(db.String(200), nullable=False, server_default=db.FetchedValue())
+    city = db.Column(db.String(20, 'utf8mb4'), nullable=False, server_default=db.FetchedValue())
+    name = db.Column(db.String(50, 'utf8mb4'), nullable=False)
+    phone = db.Column(db.String(15, 'utf8mb4'), nullable=False)
+    tags = db.Column(db.String(100, 'utf8mb4'))
+    content = db.Column(db.String(200, 'utf8mb4'), nullable=False, server_default=db.FetchedValue())
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
     updateat = db.Column(db.TIMESTAMP)
     deleteat = db.Column(db.DateTime)
@@ -64,7 +64,7 @@ class Comment(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     commodity = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
-    content = db.Column(db.String(500), nullable=False, server_default=db.FetchedValue())
+    content = db.Column(db.String(1000, 'utf8mb4'), nullable=False, server_default=db.FetchedValue())
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
     updateat = db.Column(db.TIMESTAMP)
     deleteat = db.Column(db.DateTime)
@@ -92,9 +92,9 @@ class Commodity(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     price = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
-    title = db.Column(db.String(50), nullable=False, server_default=db.FetchedValue())
-    content = db.Column(db.String(500), nullable=False, server_default=db.FetchedValue())
-    tag = db.Column(db.String(500), nullable=False, server_default=db.FetchedValue())
+    title = db.Column(db.String(100, 'utf8mb4'), nullable=False, server_default=db.FetchedValue())
+    content = db.Column(db.String(1000, 'utf8mb4'), nullable=False, server_default=db.FetchedValue())
+    tag = db.Column(db.String(1000, 'utf8mb4'), nullable=False, server_default=db.FetchedValue())
     seller = db.Column(db.Integer, nullable=False)
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
     updateat = db.Column(db.TIMESTAMP)
@@ -137,7 +137,7 @@ class Order(db.Model):
     __tablename__ = 'order'
 
     id = db.Column(db.Integer, primary_key=True)
-    courier = db.Column(db.String(50), nullable=False, server_default=db.FetchedValue())
+    courier = db.Column(db.String(50, 'utf8mb4'), nullable=False, server_default=db.FetchedValue())
     status = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
     seller = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
     buyer = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
@@ -171,11 +171,12 @@ class User(db.Model, UserMixin):
     __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50, 'utf8_general_ci'), nullable=False, server_default=db.FetchedValue())
-    phone = db.Column(db.String(15), nullable=False)
-    region = db.Column(db.String(50), nullable=False, server_default=db.FetchedValue())
-    signature = db.Column(db.String(100), nullable=False, server_default=db.FetchedValue())
-    pwd = db.Column(db.String(50))
+    name = db.Column(db.String(50, 'utf8mb4'), nullable=False, server_default=db.FetchedValue())
+    phone = db.Column(db.String(15, 'utf8mb4'), nullable=False)
+    region = db.Column(db.String(50, 'utf8mb4'), nullable=False, server_default=db.FetchedValue())
+    signature = db.Column(db.String(100, 'utf8mb4'), nullable=False, server_default=db.FetchedValue())
+    pwd = db.Column(db.String(200, 'utf8mb4'))
+    # pwd = db.Column(db.Integer)
     sex = db.Column(db.Integer)
     default_address = db.Column(db.Integer)
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
@@ -186,10 +187,10 @@ class User(db.Model, UserMixin):
         return "<User %r>" % self.name
 
     def set_pwd(self, pwd):
-        self.pwd = generate_password_hash(pwd)
+        self.pwd = generate_password_hash(str(pwd))
 
     def check_pwd(self, pwd):
-        return check_password_hash(self.pwd, pwd)
+        return check_password_hash(self.pwd, str(pwd))
     
     def insert(self):
         db.session.add(self)
