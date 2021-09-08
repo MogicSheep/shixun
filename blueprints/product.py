@@ -21,7 +21,7 @@ def show_commodity_info(commodity_id):
         'Info': info.format()
     })
 
-#查看单个商品评论
+#查看单个商品所有评论
 @product_bp.route('/api/v1/product/comments/<commodity_id>',methods=['GET'])
 def show_commodity_comments(commodity_id):
     comments = Comment.query.filter(Comment.commodity == commodity_id).all()
