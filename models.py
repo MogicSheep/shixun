@@ -141,6 +141,7 @@ class Order(db.Model):
     status = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
     seller = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
     buyer = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
+    destination = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue()) #目的地：买家地址id
     commodity = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
     updateat = db.Column(db.TIMESTAMP)
@@ -163,6 +164,7 @@ class Order(db.Model):
         'seller': self.seller,
         'buyer': self.buyer,
         'commodity': self.commodity,
+        'destination': self.destination,
         'createat': self.createat
         } 
 
