@@ -13,10 +13,22 @@ media_bp = Blueprint('media', __name__)
 # 上传图片
 @media_bp.route('/api/v1/media/upload_image', methods = ['POST'])
 def upload_image():
-    success, retid = media_upload_image(request)
+    imgfile = request.files['image'].read()
+    new_img = Image(content = imgfile)
+    success = True
+    try:
+        db.session.add(new_img)
+        db.session.flush()
+        db.session.commit()
+    except Exception as e:
+        print("--------------------------------------")
+        print("[ERROR] at upload img: \n%s" % repr(e))
+        print("--------------------------------------")
+        success = False
+    
     return jsonify({
         'success' : success,
-        'id': retid
+        'id': new_img.id
     })
     
 

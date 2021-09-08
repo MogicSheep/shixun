@@ -1,5 +1,6 @@
 import os
 import sys
+import pickle
 sys.path.append("..")
 from flask import Flask,jsonify,request,abort, redirect, render_template, url_for, flash, Blueprint
 from werkzeug.wrappers import PlainRequest
@@ -49,8 +50,31 @@ def add_comment():
 # 发布信息
 @product_bp.route('/api/v1/product/add', methods=['POST'])
 def add_product():
-    success, retid = product_add(request)
+    body = request.get_json()
+    new_content = body.get('content')
+    new_price = int(body.get('price'))
+    new_tags = pickle.dumps(list(body.get('tags')))
+    # TODO : user id!
+    new_seller = 123
+    new_title = str(body.get('title'))
+    new_commodity = Commodity(price = new_price, title = new_title, content = new_content,
+            tag = new_tags, seller = new_seller)
+    image_urls = list(body.get('images_urls'))
+    success = True
+    try:
+        db.session.add(new_commodity)
+        db.session.flush()
+        for url in image_urls:
+            row = Image.query.filter(Image.id==url).first()
+            row.commodity = new_commodity.id
+        db.session.commit()
+    except Exception as e:
+        print("--------------------------------------")
+        print("[ERROR] at upload img: \n%s" % repr(e))
+        print("--------------------------------------")
+        success = False
+
     return jsonify({
         'success' : success,
-        'id': retid
+        'id': new_commodity.id
     })
