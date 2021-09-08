@@ -6,9 +6,11 @@ from werkzeug.wrappers import PlainRequest
 from flask_cors import CORS
 from models import db, Address,User, setup_db, Commodity, Image
 from flask_login import current_user, login_user, logout_user, login_required
+import logging
 
 
 media_bp = Blueprint('media', __name__)
+logger = logging.getLogger(__name__)
 
 # 上传图片
 @media_bp.route('/api/v1/media/upload_image', methods = ['POST'])
@@ -21,9 +23,7 @@ def upload_image():
         db.session.flush()
         db.session.commit()
     except Exception as e:
-        print("--------------------------------------")
-        print("[ERROR] at upload img: \n%s" % repr(e))
-        print("--------------------------------------")
+        logger.exception('Uploading image failed!')
         success = False
     
     return jsonify({

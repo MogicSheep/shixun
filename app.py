@@ -4,7 +4,7 @@ from werkzeug.wrappers import PlainRequest
 from flask_cors import CORS
 from models import db, Address,User, setup_db, Commodity, Image
 from flask_login import current_user, login_user, logout_user, login_required
-
+from flask_login import LoginManager
 
 from blueprints.user import user_bp
 from blueprints.product import product_bp
@@ -18,8 +18,6 @@ pymysql.install_as_MySQLdb()
 
 import pickle
 
-from module.product import product_add
-from module.media import media_upload_image
 def create_app(test_config=None):
 
     app = Flask(__name__)
@@ -50,7 +48,7 @@ def register_blueprints(app):
 app = create_app()
 app.debug = True
 app.config['DEBUG'] = True
-from flask_login import LoginManager
+
 login_manager = LoginManager(app)
 login_manager.init_app(app)
 

@@ -1,16 +1,19 @@
 import os
 import sys
 import pickle
+
+from sqlalchemy.sql.elements import Null
 sys.path.append("..")
 from flask import Flask,jsonify,request,abort, redirect, render_template, url_for, flash, Blueprint
 from werkzeug.wrappers import PlainRequest
 from flask_cors import CORS
-from models import db, Address,User, setup_db, Commodity, Image
+from models import db, Address,User, setup_db, Commodity, Image, Comment
 from flask_login import current_user, login_user, logout_user, login_required
-
+import logging
 
 
 product_bp = Blueprint('product', __name__)
+logger = logging.getLogger(__name__)
 
 #查看单个商品信息
 @product_bp.route('/api/v1/product/show/<commodity_id>',methods=['GET'])
@@ -50,12 +53,18 @@ def add_comment():
 # 发布信息
 @product_bp.route('/api/v1/product/add', methods=['POST'])
 def add_product():
+    if not current_user.is_authenticated:
+        return jsonify({
+            'success' : False,
+            'id': -1
+        })
+
     body = request.get_json()
     new_content = body.get('content')
     new_price = int(body.get('price'))
     new_tags = pickle.dumps(list(body.get('tags')))
     # TODO : user id!
-    new_seller = 123
+    new_seller = current_user.id
     new_title = str(body.get('title'))
     new_commodity = Commodity(price = new_price, title = new_title, content = new_content,
             tag = new_tags, seller = new_seller)
@@ -69,9 +78,7 @@ def add_product():
             row.commodity = new_commodity.id
         db.session.commit()
     except Exception as e:
-        print("--------------------------------------")
-        print("[ERROR] at upload img: \n%s" % repr(e))
-        print("--------------------------------------")
+        logger.exception('Add commedity failed!')
         success = False
 
     return jsonify({
