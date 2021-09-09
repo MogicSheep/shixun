@@ -81,7 +81,7 @@ def logout():
 #     })
 
 #修改个人信息
-@user_bp.route('/api/v1/user/set_default_address/<user_id>', methods = ['POST'])
+@user_bp.route('/api/v1/user/change_profile/<user_id>', methods = ['POST'])
 def change_profile(user_id):
     body = request.get_json()
 
