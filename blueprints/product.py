@@ -59,19 +59,18 @@ def add_product():
     #         'success' : False,
     #         'id': -1
     #     })
-
-    new_content = request.form.get('content')
-    new_price = int(request.form.get('price'))
-    # new_tags = pickle.dumps(list(request.form.get('tags')))
-    new_tags = request.form.get('tags')
-    # TODO : user id!
-    new_seller = 123
-    new_title = str(request.form.get('title'))
-    new_commodity = Commodity(price = new_price, title = new_title, content = new_content,
-            tag = new_tags, seller = new_seller)
-    image_urls = request.form.get('images_urls').split(',')
-    success = True
     try:
+        new_content = request.form.get('content')
+        new_price = int(request.form.get('price'))
+        # new_tags = pickle.dumps(list(request.form.get('tags')))
+        new_tags = request.form.get('tags')
+        # TODO : user id!
+        new_seller = 123
+        new_title = str(request.form.get('title'))
+        new_commodity = Commodity(price = new_price, title = new_title, content = new_content,
+                tag = new_tags, seller = new_seller)
+        image_urls = request.form.get('images_urls').split(',')
+        success = True
         db.session.add(new_commodity)
         db.session.flush()
         for url in image_urls:

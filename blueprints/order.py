@@ -50,6 +50,7 @@ def order_buy(user_id):
 #查看单个订单情况
 @order_bp.route('/api/v1/order/single_order/<order_id>', methods = ['GET'])
 def check_single_order(order_id):
+    # TODO：不能查看别人的订单
     single_order = Order.query.get(order_id)
     return jsonify({
         'Success':True,
@@ -64,5 +65,5 @@ def check_deliver():
 
 #确认收货
 @order_bp.route('/api/v1/order/take', methods = ['GET'])
-def take_order():
+def take_order(): 
     return 
