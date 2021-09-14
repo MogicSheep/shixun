@@ -7,6 +7,7 @@ from flask_cors import CORS
 from models import db, Address,User, setup_db, Commodity, Image
 from flask_login import current_user, login_user, logout_user, login_required
 import logging
+from sqlalchemy import func
 
 user_bp = Blueprint('user', __name__)
 logger = logging.getLogger(__name__)
@@ -117,35 +118,40 @@ def get_profile(user_id):
 @user_bp.route('/api/v1/user/change_address/<address_id>',methods=['POST'])
 def change_address(address_id = 'null'):
     logger.debug("In to the address change %s" % str(address_id))
-    body = request.get_json()
     if(address_id != 'null'):
         address = Address.query.get(address_id)
-        if(body.get("user")):
-            address.name = body.get("user")
-        if(body.get("name")):
-            address.name = body.get("name")
-        if(body.get("phone")):
-            address.phone = body.get("phone")
-        if(body.get("city")):
-            address.city = body.get("city")
-        if(body.get("content")):
-            address.content = body.get("content")
+        if(request.form.get("user")):
+            address.name = request.form.get("user")
+        if(request.form.get("name")):
+            address.name = request.form.get("name")
+        if(request.form.get("phone")):
+            address.phone = request.form.get("phone_number")
+        if(request.form.get("city")):
+            address.city = request.form.get("city")
+        if(request.form.get("content")):
+            address.content = request.form.get("detailed_address")
     else:
-        new_id = Address.query(func.max(Address.id)).first() + 1
-        new_user = body.get("user",None)
-        new_name = body.get("name",None)
-        new_phone = body.get("phone",None)
-        new_city = body.get("city",None)
-        new_content = body.get("content",None)
-        address = Address(id = new_id,user = new_user ,name=new_name, phone=new_phone,city = new_city,content=new_content)
+        # new_id = Address.session.query(func.max(Address.id)).first()
+        new_user = request.form.get("user",None)
+        new_name = request.form.get("name",None)
+        new_phone = request.form.get("phone_number",None)
+        new_city = request.form.get("city",None)
+        new_content = request.form.get("detailed_address",None)
+        address = Address(user = new_user ,name=new_name, phone=new_phone,city = new_city,content=new_content)
     try:
-        address.insert()
-    except:
-        print(" ")
+        db.session.add(address)
+        db.session.flush()
+        db.session.commit()
+    except Exception as e:
+        logger.exception('Add address failed!')
+        success = False
+        db.session.rollback()
     return jsonify({
         'Success':True,
         'Address': address.format()
     })
+
+
 #删除收货地址
 @user_bp.route('/api/v1/user/delete_address/<address_id>',methods=['DELETE'])
 def delete_address(address_id):
@@ -171,8 +177,7 @@ def get_all_address(user_id):
 #设置默认收货地址
 @user_bp.route('/api/v1/user/set_default_address/<user_id>',methods=['POST'])
 def set_default_address(user_id):
-    body = request.get_json()
-    new_id = body.get("address_id",None)
+    new_id = request.form.get("id",None)
     user = User.query.get(user_id)
     try:
         user.default_address = new_id

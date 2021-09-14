@@ -210,6 +210,7 @@ class User(db.Model, UserMixin):
         'id': self.id,
         'name': self.name,
         'region': self.region,
+        'default_address':self.default_address,
         'sex': self.sex,
         'signature': self.signature,
         'createat': self.createat
