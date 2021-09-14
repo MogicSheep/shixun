@@ -39,15 +39,16 @@ def add_comment():
     body = request.get_json()
     product_id = body.get("commodity",None)
     content = body.get("content",None)
-    new_id = Comment.query(func.max(Comment.id)).first() + 1
-    comment = Comment(id = new_id, commodity = product_id, content = content)
+    comment = Comment(commodity = product_id, content = content)
     try:
         comment.insert()
     except:
-        print(" ")
+        logger.exception('Add commedity failed!')
+        success = False
+        db.session.rollback()    
     return jsonify({
         'Success':True,
-        'Comment': comment.format
+        'Comment': comment.id
     })
 
 # 发布信息
