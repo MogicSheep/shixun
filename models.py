@@ -172,22 +172,13 @@ class Order(db.Model):
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
 
-<<<<<<< HEAD
     id = db.Column(db.Integer, primary_key=True) #主键用户id
-    name = db.Column(db.String(50), nullable=False, server_default=db.FetchedValue()) # 用户昵称
+    name = db.Column(db.String(50), nullable=True, server_default=db.FetchedValue()) # 用户昵称
     phone = db.Column(db.String(15), nullable=False) # 用户手机
-    gravatar =db.Column(db.Integer, nullable=False) #用户的头像图片id
-    region = db.Column(db.String(50), nullable=False, server_default=db.FetchedValue()) #用户所在地区
-    signature = db.Column(db.String(100), nullable=False, server_default=db.FetchedValue()) # 用户个性签名
+    gravatar =db.Column(db.Integer, nullable=True) #用户的头像图片id
+    region = db.Column(db.String(50), nullable=True, server_default=db.FetchedValue()) #用户所在地区
+    signature = db.Column(db.String(100), nullable=True, server_default=db.FetchedValue()) # 用户个性签名
     pwd = db.Column(db.String(200)) #用户密码
-=======
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=True, server_default=db.FetchedValue())
-    phone = db.Column(db.String(15), nullable=False)
-    region = db.Column(db.String(50), nullable=True, server_default=db.FetchedValue())
-    signature = db.Column(db.String(100), nullable=True, server_default=db.FetchedValue())
-    pwd = db.Column(db.String(200))
->>>>>>> 6f37c8a... update login register logout api, update models.py
     # pwd = db.Column(db.Integer)
     sex = db.Column(db.Integer)# 用户性别
     default_address = db.Column(db.Integer) # 默认地址id
