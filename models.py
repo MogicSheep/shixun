@@ -115,7 +115,7 @@ class Commodity(db.Model):
         'title': self.title,
         'tag': self.tag,
         'price': self.price,
-        'seller': self.origin,
+        'seller': self.seller,
         'content':self.content,
         }
 
