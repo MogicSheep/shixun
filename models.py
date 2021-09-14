@@ -172,15 +172,16 @@ class Order(db.Model):
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False, server_default=db.FetchedValue())
-    phone = db.Column(db.String(15), nullable=False)
-    region = db.Column(db.String(50), nullable=False, server_default=db.FetchedValue())
-    signature = db.Column(db.String(100), nullable=False, server_default=db.FetchedValue())
-    pwd = db.Column(db.String(200))
+    id = db.Column(db.Integer, primary_key=True) #主键用户id
+    name = db.Column(db.String(50), nullable=True, server_default=db.FetchedValue()) # 用户昵称
+    phone = db.Column(db.String(15), nullable=False) # 用户手机
+    gravatar =db.Column(db.Integer, nullable=True) #用户的头像图片id
+    region = db.Column(db.String(50), nullable=True, server_default=db.FetchedValue()) #用户所在地区
+    signature = db.Column(db.String(100), nullable=True, server_default=db.FetchedValue()) # 用户个性签名
+    pwd = db.Column(db.String(200)) #用户密码
     # pwd = db.Column(db.Integer)
-    sex = db.Column(db.Integer)
-    default_address = db.Column(db.Integer)
+    sex = db.Column(db.Integer)# 用户性别
+    default_address = db.Column(db.Integer) # 默认地址id
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
     updateat = db.Column(db.TIMESTAMP)
     deleteat = db.Column(db.DateTime)
@@ -215,5 +216,12 @@ class User(db.Model, UserMixin):
         'signature': self.signature,
         'createat': self.createat
         } 
+
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    #author = db.relationship('User', back_populates='messages') 暂时取消掉
 
 

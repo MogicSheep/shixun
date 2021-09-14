@@ -49,6 +49,7 @@ def register_blueprints(app):
 app = create_app()
 app.debug = True
 app.config['DEBUG'] = True
+app.config["SECRET_KEY"] = 'TPmi4aLWRbyVq8zu9v82dWYW1'
 
 login_manager = LoginManager(app)
 login_manager.init_app(app)

@@ -16,7 +16,11 @@ logger = logging.getLogger(__name__)
 @user_bp.route('/api/v1/user/register', methods = ['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('get_test')) #已登录用户重定向到主页 /
+        return jsonify({
+                'Success': True,
+                #'user': user.format()
+            })
+        #return redirect(url_for('get_test')) #已登录用户重定向到主页 /
     else:
         if request.method == 'POST':
             user_phone = request.form.get("phone")
@@ -24,45 +28,76 @@ def register():
 
             user = User.query.filter(User.phone == user_phone).first()
             if user is not None:
-                flash('The phone number is currently registered')
-                return redirect(url_for('login')) #已注册用户重定向到登录页面 /api/v1/user/login
+                #flash('The phone number is currently registered')
+                return jsonify({
+                    'Success': False,
+                    'user': user.format()
+                })
+                # return redirect(url_for('login')) #已注册用户重定向到登录页面 /api/v1/user/login
             else:
-                new_user = User(phone = user_phone)
+                new_user = User(phone = user_phone,name = " ", region = " ", signature = " ")
                 new_user.set_pwd(user_pwd)
                 new_user.insert()
-                login_user(user)
-                return redirect(url_for('login')) #已注册用户重定向到登录页面 /api/v1/user/login
-    return render_template('register.html') #填register页面
+                login_user(new_user, remember = False)
+                return jsonify({
+                    'Success': True,
+                    'user': new_user.format()
+                })
+                # return redirect(url_for('login')) #已注册用户重定向到登录页面 /api/v1/user/login
+    # return render_template('register.html') #填register页面
 
 #用户登录
 @user_bp.route('/api/v1/user/login', methods = ['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('get_test')) #已登录用户重定向到主页 /
+        return jsonify({
+                'Success': False,
+                #'user': user.format()
+            })
+        #return redirect(url_for('get_test')) #已登录用户重定向到主页 /
     else:
         if request.method == 'POST':
             user_phone = request.form.get("phone")
             user_pwd = request.form.get("pwd")
+            remember_me = request.form.get('remember', False)
+            if remember_me:
+                remember_me = True
 
             user = User.query.filter(User.phone == user_phone).first()
             if user is not None:
                 if user.pwd is None:
-                    flash('Register your account')
-                    return redirect(url_for('register')) #未注册用户重定向到注册页面 /api/v1/user/register
+                    #flash('Register your account')
+                    return jsonify({
+                        'Success': False,
+                        'user': user.format()
+                    })
+                    # return redirect(url_for('register')) #未注册用户重定向到注册页面 /api/v1/user/register
                 else:
-                    if user.check(user_pwd):
-                        login_user(user)
-                        return redirect(url_for('get_test')) #登录用户重定向到主页 /
-            flash('Username or password is incorrect')
-            return redirect(url_for('login')) #密码或账户错误用户重定向到登录页面 /api/v1/user/login
-    return render_template('login.html') #填login页面
+                    if user.check_pwd(user_pwd):
+                        login_user(user, remember_me)
+                        return jsonify({
+                            'Success': True,
+                            'user': user.format()
+                        })
+            return jsonify({
+                    'Success': False,
+                    #'user': new_user.format()
+                })
+                        # return redirect(url_for('get_test')) #登录用户重定向到主页 /
+            #flash('Username or password is incorrect')
+            # return redirect(url_for('login')) #密码或账户错误用户重定向到登录页面 /api/v1/user/login
+    # return render_template('login.html') #填login页面
 
 #用户登出
-@user_bp.route('/api/v1/user/logout')
+@user_bp.route('/api/v1/user/logout', methods = ["DELETE"])
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('get_test')) #登出用户重定向到主页 /
+    return jsonify({
+        'Success': True,
+        #'user': user.format()
+    })
+    # return redirect(url_for('get_test')) #登出用户重定向到主页 /
 
 # @user_bp.route('/api/v1/user/login/<user_phone>/<user_code>', methods = ['POST'])
 # def get_phone(user_phone, user_code):
