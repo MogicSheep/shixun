@@ -120,7 +120,7 @@ def change_address(address_id = 'null'):
     if(address_id != 'null'):
         address = Address.query.get(address_id)
         if(body.get("user")):
-            address.name = body.get("user")
+            address.user = body.get("user")
         if(body.get("name")):
             address.name = body.get("name")
         if(body.get("phone")):
