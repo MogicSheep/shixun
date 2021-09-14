@@ -6,10 +6,10 @@ from werkzeug.wrappers import PlainRequest
 from flask_cors import CORS
 from models import db, Address,User, setup_db, Commodity, Image
 from flask_login import current_user, login_user, logout_user, login_required
-
+import logging
 
 user_bp = Blueprint('user', __name__)
-
+logger = logging.getLogger(__name__)
 
 #用户注册
 @user_bp.route('/api/v1/user/register', methods = ['GET', 'POST'])
@@ -116,6 +116,7 @@ def get_profile(user_id):
 #修改收货地址
 @user_bp.route('/api/v1/user/change_address/<address_id>',methods=['POST'])
 def change_address(address_id = 'null'):
+    logger.debug("In to the address change %s" % str(address_id))
     body = request.get_json()
     if(address_id != 'null'):
         address = Address.query.get(address_id)
@@ -157,14 +158,16 @@ def delete_address(address_id):
 
 
 #获取所有收货地址
-@user_bp.route('/api/v1/user/set_default_address/<user_id>',methods=['GET'])
-def post_all_address(user_id):
+@user_bp.route('/api/v1/user/get_all_address/<user_id>',methods=['GET'])
+def get_all_address(user_id):
     addresses = Address.query.filter(Address.user == user_id).all()
     formatted_address = [address.format() for address in addresses] 
     return jsonify({
         'Success':True,
         'marbres': formatted_address
     })
+
+
 #设置默认收货地址
 @user_bp.route('/api/v1/user/set_default_address/<user_id>',methods=['POST'])
 def set_default_address(user_id):
