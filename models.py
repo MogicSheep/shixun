@@ -1,5 +1,5 @@
 # coding: utf-8
-from sqlalchemy import Column, String, create_engine,Integer,ForeignKey
+from sqlalchemy import Column, String, create_engine, Integer, ForeignKey
 from werkzeug.exceptions import default_exceptions
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -8,15 +8,23 @@ import os
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 from sqlalchemy.sql import func
-database_name="db_v3"
-database_path = os.environ.get('DATABASE_URL',"mysql://{}:{}@{}/{}".format('yxn', 'bilibili','118.195.233.143:3306', database_name))
+
+database_name = "db_v3"
+database_path = os.environ.get(
+    "DATABASE_URL",
+    "mysql://{}:{}@{}/{}".format(
+        "yxn", "bilibili", "118.195.233.143:3306", database_name
+    ),
+)
 
 db = SQLAlchemy()
 
-'''
+"""
 setup_db(app)
     binds a flask application and a SQLAlchemy service
-'''
+"""
+
+
 def setup_db(app, database_path=database_path):
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
@@ -26,7 +34,7 @@ def setup_db(app, database_path=database_path):
 
 
 class Address(db.Model):
-    __tablename__ = 'address'
+    __tablename__ = "address"
 
     id = db.Column(db.Integer, primary_key=True)
     user = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
@@ -34,7 +42,9 @@ class Address(db.Model):
     name = db.Column(db.String(50), nullable=False)
     phone = db.Column(db.String(15), nullable=False)
     tags = db.Column(db.String(100))
-    content = db.Column(db.String(200), nullable=False, server_default=db.FetchedValue())
+    content = db.Column(
+        db.String(200), nullable=False, server_default=db.FetchedValue()
+    )
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
     updateat = db.Column(db.TIMESTAMP)
     deleteat = db.Column(db.DateTime)
@@ -42,32 +52,37 @@ class Address(db.Model):
     def insert(self):
         db.session.add(self)
         db.session.commit()
+
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+
     def update(self):
         db.session.commit()
-    
+
     def format(self):
         return {
-        'id': self.id,
-        'name': self.name,
-        'phone': self.phone,
-        'city': self.city,
-        'tags': self.tags,
-        'content':self.content
+            "id": self.id,
+            "name": self.name,
+            "phone": self.phone,
+            "city": self.city,
+            "tags": self.tags,
+            "content": self.content,
         }
 
 
 class Comment(db.Model):
-    __tablename__ = 'comment'
+    __tablename__ = "comment"
 
     id = db.Column(db.Integer, primary_key=True)
     commodity = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
-    content = db.Column(db.String(1000), nullable=False, server_default=db.FetchedValue())
+    content = db.Column(
+        db.String(1000), nullable=False, server_default=db.FetchedValue()
+    )
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
     updateat = db.Column(db.TIMESTAMP)
     deleteat = db.Column(db.DateTime)
+
     def insert(self):
         db.session.add(self)
         db.session.commit()
@@ -80,20 +95,18 @@ class Comment(db.Model):
         db.session.commit()
 
     def format(self):
-        return {
-        'id': self.id,
-        'commodity': self.commodity,
-        'content': self.content
-        }
+        return {"id": self.id, "commodity": self.commodity, "content": self.content}
 
 
 class Commodity(db.Model):
-    __tablename__ = 'commodity'
+    __tablename__ = "commodity"
 
     id = db.Column(db.Integer, primary_key=True)
     price = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
     title = db.Column(db.String(100), nullable=False, server_default=db.FetchedValue())
-    content = db.Column(db.String(1000), nullable=False, server_default=db.FetchedValue())
+    content = db.Column(
+        db.String(1000), nullable=False, server_default=db.FetchedValue()
+    )
     tag = db.Column(db.String(1000), nullable=False, server_default=db.FetchedValue())
     seller = db.Column(db.Integer, nullable=False)
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
@@ -103,45 +116,47 @@ class Commodity(db.Model):
     def insert(self):
         db.session.add(self)
         db.session.commit()
+
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+
     def update(self):
         db.session.commit()
-    
+
     def format(self):
         return {
-        'id': self.id,
-        'title': self.title,
-        'tag': self.tag,
-        'price': self.price,
-        'seller': self.seller,
-        'content':self.content,
+            "id": self.id,
+            "title": self.title,
+            "tag": self.tag,
+            "price": self.price,
+            "seller": self.seller,
+            "content": self.content,
         }
 
 
-
 class Image(db.Model):
-    __tablename__ = 'images'
+    __tablename__ = "images"
 
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.LargeBinary(length=(2**32)-1))
+    content = db.Column(db.LargeBinary(length=(2 ** 32) - 1))
     commodity = db.Column(db.Integer, nullable=True, server_default=db.FetchedValue())
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
     updateat = db.Column(db.TIMESTAMP)
     deleteat = db.Column(db.DateTime)
 
 
-
 class Order(db.Model):
-    __tablename__ = 'order'
+    __tablename__ = "order"
 
     id = db.Column(db.Integer, primary_key=True)
     courier = db.Column(db.String(50), nullable=False, server_default=db.FetchedValue())
     status = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
     seller = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
     buyer = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
-    destination = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue()) #目的地：买家地址id
+    destination = db.Column(
+        db.Integer, nullable=False, server_default=db.FetchedValue()
+    )  # 目的地：买家地址id
     commodity = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
     updateat = db.Column(db.TIMESTAMP)
@@ -160,28 +175,34 @@ class Order(db.Model):
 
     def format(self):
         return {
-        'id': self.id,
-        'seller': self.seller,
-        'buyer': self.buyer,
-        'commodity': self.commodity,
-        'destination': self.destination,
-        'createat': self.createat
-        } 
+            "id": self.id,
+            "seller": self.seller,
+            "buyer": self.buyer,
+            "commodity": self.commodity,
+            "destination": self.destination,
+            "createat": self.createat,
+        }
 
 
 class User(db.Model, UserMixin):
-    __tablename__ = 'user'
+    __tablename__ = "user"
 
-    id = db.Column(db.Integer, primary_key=True) #主键用户id
-    name = db.Column(db.String(50), nullable=True, server_default=db.FetchedValue()) # 用户昵称
-    phone = db.Column(db.String(15), nullable=False) # 用户手机
-    gravatar =db.Column(db.Integer, nullable=True) #用户的头像图片id
-    region = db.Column(db.String(50), nullable=True, server_default=db.FetchedValue()) #用户所在地区
-    signature = db.Column(db.String(100), nullable=True, server_default=db.FetchedValue()) # 用户个性签名
-    pwd = db.Column(db.String(200)) #用户密码
+    id = db.Column(db.Integer, primary_key=True)  # 主键用户id
+    name = db.Column(
+        db.String(50), nullable=True, server_default=db.FetchedValue()
+    )  # 用户昵称
+    phone = db.Column(db.String(15), nullable=False)  # 用户手机
+    # gravatar =db.Column(db.Integer, nullable=True) #用户的头像图片id
+    region = db.Column(
+        db.String(50), nullable=True, server_default=db.FetchedValue()
+    )  # 用户所在地区
+    signature = db.Column(
+        db.String(100), nullable=True, server_default=db.FetchedValue()
+    )  # 用户个性签名
+    pwd = db.Column(db.String(200))  # 用户密码
     # pwd = db.Column(db.Integer)
-    sex = db.Column(db.Integer)# 用户性别
-    default_address = db.Column(db.Integer) # 默认地址id
+    sex = db.Column(db.Integer)  # 用户性别
+    default_address = db.Column(db.Integer)  # 默认地址id
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
     updateat = db.Column(db.TIMESTAMP)
     deleteat = db.Column(db.DateTime)
@@ -194,7 +215,7 @@ class User(db.Model, UserMixin):
 
     def check_pwd(self, pwd):
         return check_password_hash(self.pwd, str(pwd))
-    
+
     def insert(self):
         db.session.add(self)
         db.session.commit()
@@ -208,20 +229,19 @@ class User(db.Model, UserMixin):
 
     def format(self):
         return {
-        'id': self.id,
-        'name': self.name,
-        'region': self.region,
-        'default_address':self.default_address,
-        'sex': self.sex,
-        'signature': self.signature,
-        'createat': self.createat
-        } 
+            "id": self.id,
+            "name": self.name,
+            "region": self.region,
+            "default_address": self.default_address,
+            "sex": self.sex,
+            "signature": self.signature,
+            "createat": self.createat,
+        }
+
 
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
-    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    #author = db.relationship('User', back_populates='messages') 暂时取消掉
-
-
+    author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    # author = db.relationship('User', back_populates='messages') 暂时取消掉
