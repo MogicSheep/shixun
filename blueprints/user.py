@@ -21,8 +21,8 @@ def register():
                     'Success': False,
                     'Info': 'current_user is authenticated'
                 })
-        user_phone = request.form.get("phone")
-        user_pwd = request.form.get("pwd")
+        user_phone = str(request.form.get("phone"))
+        user_pwd = str(request.form.get("pwd"))
         if user_pwd is None or user_phone is None:
             return jsonify({
                 'Success': False,
@@ -177,22 +177,22 @@ def change_address(address_id = 'null'):
         if(address_id != 'null'):
             address = Address.query.get(address_id)
             if(request.form.get("user")):
-                address.name = request.form.get("user")
+                address.name = str(request.form.get("user"))
             if(request.form.get("name")):
-                address.name = request.form.get("name")
+                address.name = str(request.form.get("name"))
             if(request.form.get("phone")):
-                address.phone = request.form.get("phone_number")
+                address.phone = str(request.form.get("phone_number"))
             if(request.form.get("city")):
-                address.city = request.form.get("city")
+                address.city = str(request.form.get("city"))
             if(request.form.get("content")):
-                address.content = request.form.get("detailed_address")
+                address.content = str(request.form.get("detailed_address"))
         else:
             # new_id = Address.session.query(func.max(Address.id)).first()
-            new_user = request.form.get("user",None)
-            new_name = request.form.get("name",None)
-            new_phone = request.form.get("phone_number",None)
-            new_city = request.form.get("city",None)
-            new_content = request.form.get("detailed_address",None)
+            new_user = str(request.form.get("user",None))
+            new_name = str(request.form.get("name",None))
+            new_phone = str(request.form.get("phone_number",None))
+            new_city = str(request.form.get("city",None))
+            new_content = str(request.form.get("detailed_address",None))
             address = Address(user = new_user ,name=new_name, phone=new_phone,city = new_city,content=new_content)
         try:
             db.session.add(address)
@@ -251,7 +251,7 @@ def get_all_address(user_id):
 @user_bp.route('/api/v1/user/set_default_address/<user_id>',methods=['POST'])
 def set_default_address(user_id):
     try:
-        new_id = request.form.get("id",None)
+        new_id = int(request.form.get("id",None))
         user = User.query.get(user_id)
         user.default_address = new_id
         user.insert()
