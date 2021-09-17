@@ -8,7 +8,6 @@ from models import db, Address,User, setup_db, Commodity, Image
 from flask_login import current_user, login_user, logout_user, login_required
 import logging
 from sqlalchemy import func
-from utils import 
 user_bp = Blueprint('user', __name__)
 logger = logging.getLogger(__name__)
 
