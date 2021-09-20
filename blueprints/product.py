@@ -19,9 +19,12 @@ logger = logging.getLogger(__name__)
 @product_bp.route('/api/v1/product/show/<commodity_id>',methods=['GET'])
 def show_commodity_info(commodity_id):
     info = Commodity.query.get(commodity_id)
+    photos = Image.query.filter(Image.commodity==commodity_id).all()
+    photo_file = [photo.content for photo in photos]
     return jsonify({
         'Success':True,
-        'Info': info.format()
+        'Info': info.format(),
+        'photos':photo_file
     })
 
 #查看单个商品所有评论
@@ -55,11 +58,11 @@ def add_comment():
 @product_bp.route('/api/v1/product/add', methods=['POST'])
 def add_product():
     # TODO:
-    # if not current_user.is_authenticated:
-    #     return jsonify({
-    #         'success' : False,
-    #         'id': -1
-    #     })
+    if not current_user.is_authenticated:
+        return jsonify({
+            'success' : False,
+            'id': -1
+        })
     try:
         new_content = request.form.get('content')
         new_price = int(request.form.get('price'))
