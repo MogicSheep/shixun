@@ -37,13 +37,13 @@ class Address(db.Model):
     __tablename__ = "address"
 
     id = db.Column(db.Integer, primary_key=True)
-    user = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
-    city = db.Column(db.String(20), nullable=False, server_default=db.FetchedValue())
+    user = db.Column(db.Integer, nullable=False)
+    city = db.Column(db.String(20), nullable=False)
     name = db.Column(db.String(50), nullable=False)
     phone = db.Column(db.String(15), nullable=False)
     tags = db.Column(db.String(100))
     content = db.Column(
-        db.String(200), nullable=False, server_default=db.FetchedValue()
+        db.String(200), nullable=False,
     )
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
     updateat = db.Column(db.TIMESTAMP)
@@ -75,9 +75,9 @@ class Comment(db.Model):
     __tablename__ = "comment"
 
     id = db.Column(db.Integer, primary_key=True)
-    commodity = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
+    commodity = db.Column(db.Integer, nullable=False,)
     content = db.Column(
-        db.String(1000), nullable=False, server_default=db.FetchedValue()
+        db.String(1000), nullable=False,
     )
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
     updateat = db.Column(db.TIMESTAMP)
@@ -102,12 +102,12 @@ class Commodity(db.Model):
     __tablename__ = "commodity"
 
     id = db.Column(db.Integer, primary_key=True)
-    price = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
-    title = db.Column(db.String(100), nullable=False, server_default=db.FetchedValue())
+    price = db.Column(db.Integer, nullable=False,)
+    title = db.Column(db.String(100), nullable=False,)
     content = db.Column(
-        db.String(1000), nullable=False, server_default=db.FetchedValue()
+        db.String(1000), nullable=False,
     )
-    tag = db.Column(db.String(1000), nullable=False, server_default=db.FetchedValue())
+    tag = db.Column(db.String(1000), nullable=False,)
     seller = db.Column(db.Integer, nullable=False)
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
     updateat = db.Column(db.TIMESTAMP)
@@ -140,7 +140,7 @@ class Image(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.LargeBinary(length=(2 ** 32) - 1))
-    commodity = db.Column(db.Integer, nullable=True, server_default=db.FetchedValue())
+    commodity = db.Column(db.Integer, nullable=True,)
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
     updateat = db.Column(db.TIMESTAMP)
     deleteat = db.Column(db.DateTime)
@@ -150,14 +150,14 @@ class Order(db.Model):
     __tablename__ = "order"
 
     id = db.Column(db.Integer, primary_key=True)
-    courier = db.Column(db.String(50), nullable=False, server_default=db.FetchedValue())
-    status = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
-    seller = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
-    buyer = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
+    courier = db.Column(db.String(50), nullable=False,)
+    status = db.Column(db.Integer, nullable=False,)
+    seller = db.Column(db.Integer, nullable=False,)
+    buyer = db.Column(db.Integer, nullable=False,)
     destination = db.Column(
-        db.Integer, nullable=False, server_default=db.FetchedValue()
+        db.Integer, nullable=False,
     )  # 目的地：买家地址id
-    commodity = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())
+    commodity = db.Column(db.Integer, nullable=False,)
     createat = db.Column(db.DateTime, nullable=False, server_default=func.now())
     updateat = db.Column(db.TIMESTAMP)
     deleteat = db.Column(db.DateTime)
@@ -189,15 +189,15 @@ class User(db.Model, UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)  # 主键用户id
     name = db.Column(
-        db.String(50), nullable=True, server_default=db.FetchedValue()
+        db.String(50), nullable=True,
     )  # 用户昵称
     phone = db.Column(db.String(15), nullable=False)  # 用户手机
-    # gravatar =db.Column(db.Integer, nullable=True) #用户的头像图片id
+    gravatar =db.Column(db.Integer, nullable=True) #用户的头像图片id
     region = db.Column(
-        db.String(50), nullable=True, server_default=db.FetchedValue()
+        db.String(50), nullable=True,
     )  # 用户所在地区
     signature = db.Column(
-        db.String(100), nullable=True, server_default=db.FetchedValue()
+        db.String(100), nullable=True,
     )  # 用户个性签名
     pwd = db.Column(db.String(200))  # 用户密码
     # pwd = db.Column(db.Integer)
@@ -235,7 +235,7 @@ class User(db.Model, UserMixin):
             "default_address": self.default_address,
             "sex": self.sex,
             "signature": self.signature,
-            "createat": self.createat,
+            "gravatar": self.gravatar
         }
 
 
