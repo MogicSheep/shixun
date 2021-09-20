@@ -133,12 +133,14 @@ def change_profile(user_id):
         new_position = str(request.form.get("position", None))
         new_sex = int(request.form.get("sex", None))
         new_signature = str(request.form.get("signature", None))
+        new_gravatar = int(request.form.get("gravatar", None))
 
         user = User.query.get(user_id)
         user.name = new_name
         user.region = new_position
         user.sex = new_sex
         user.signature = new_signature
+        user.gravatar = new_gravatar
         user.insert()
         db.session.commit()
         return jsonify({

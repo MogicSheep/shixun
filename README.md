@@ -25,10 +25,18 @@ echo "server {
  
     location / {
         proxy_pass http://127.0.0.1:5500; 
-	access_log /root/flaskweb/access.log;
-	error_log  /root/flaskweb/error.log;
+        access_log /root/flaskweb/access.log;
+        error_log  /root/flaskweb/error.log;
+                 add_header Access-Control-Allow-Methods 'GET,POST,DELETE';
+        add_header Access-Control-Allow-Headers 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization'; 
     }
+
   }" > /etc/nginx/conf.d/default.conf
 
 启动后 开启另一个服务器链接，输入：
 sudo service nginx start
+
+
+add_header Access-Control-Allow-Origin *;
+        add_header Access-Control-Allow-Methods 'GET,POST,DELETE';
+        add_header Access-Control-Allow-Headers 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization'; 

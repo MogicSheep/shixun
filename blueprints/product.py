@@ -10,7 +10,7 @@ from flask_cors import CORS
 from models import db, Address,User, setup_db, Commodity, Image, Comment
 from flask_login import current_user, login_user, logout_user, login_required
 import logging
-
+import base64
 
 product_bp = Blueprint('product', __name__)
 logger = logging.getLogger(__name__)
@@ -19,13 +19,17 @@ logger = logging.getLogger(__name__)
 @product_bp.route('/api/v1/product/show/<commodity_id>',methods=['GET'])
 def show_commodity_info(commodity_id):
     info = Commodity.query.get(commodity_id)
+    ret_dic = {
+        'Success':True,
+        'Info': info.format()
+    }
     photos = Image.query.filter(Image.commodity==commodity_id).all()
     photo_file = [photo.content for photo in photos]
-    return jsonify({
-        'Success':True,
-        'Info': info.format(),
-        'photos':photo_file
-    })
+    logger.info(type(photo_file[0]))
+    for _, file in enumerate(photo_file):
+        logger.info(str(base64.b64encode(file)))
+        ret_dic[str(_)] = str(base64.b64encode(file))
+    return jsonify(ret_dic)
 
 #查看单个商品所有评论
 @product_bp.route('/api/v1/product/comments/<commodity_id>',methods=['GET'])

@@ -8,6 +8,7 @@ import os
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 from sqlalchemy.sql import func
+import base64
 
 database_name = "db_v3"
 database_path = os.environ.get(
@@ -235,7 +236,7 @@ class User(db.Model, UserMixin):
             "default_address": self.default_address,
             "sex": self.sex,
             "signature": self.signature,
-            "gravatar": self.gravatar
+            "gravatar": str(base64.b64encode(self.gravatar))
         }
 
 

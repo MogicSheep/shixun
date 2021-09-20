@@ -2,7 +2,6 @@ from bleach import clean, linkify
 from flask import flash
 from markdown import markdown
 
-
 def to_html(raw):
     allowed_tags = ['a', 'abbr', 'b', 'br', 'blockquote', 'code',
                     'del', 'div', 'em', 'img', 'p', 'pre', 'strong',
