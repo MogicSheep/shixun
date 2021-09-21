@@ -55,8 +55,8 @@ def show_commodity_comments(commodity_id):
         })
 
 #查看用户发布的所有商品id
-@product_bp.route('/api/v1/product/comments/show_all/',defaults={'user_id':None},methods=['GET'])
-@product_bp.route('/api/v1/product/comments/show_all/<user_id>',methods=['GET'])
+@product_bp.route('/api/v1/product/show_all/',defaults={'user_id':None},methods=['GET'])
+@product_bp.route('/api/v1/product/show_all/<user_id>',methods=['GET'])
 def show_all(user_id):
     try:
         if user_id is None:
