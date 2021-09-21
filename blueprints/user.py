@@ -35,7 +35,7 @@ def register():
                 'Info': 'current user is registed, please login directly.',
                 'user': user.format()
             })
-        new_user = User(phone = user_phone,name = " ", region = " ", signature = " ")
+        new_user = User(phone = user_phone,name = " ", region = " ", signature = " ", gravatar = "1")
         new_user.set_pwd(user_pwd)
         new_user.insert()
         db.session.commit()
@@ -45,7 +45,7 @@ def register():
             'user': new_user.format()
         })
     except Exception as e:
-        jsonify({
+        return jsonify({
             'Success': False,
             'Info': repr(e)
         })
@@ -54,7 +54,7 @@ def register():
 #用户登录
 @user_bp.route('/api/v1/user/login', methods = ['POST'])
 def login():
-    try:
+    #try:
         if current_user.is_authenticated:
             return jsonify({
                     'Success': False,
@@ -84,11 +84,11 @@ def login():
             'Info':'user is not registed',
             'user': user.format()
         })
-    except Exception as e:
-        jsonify({
-            'Success': False,
-            'Info': repr(e)
-        })
+    # except Exception as e:
+    #     return jsonify({
+    #         'Success': False,
+    #         'Info': repr(e)
+    #     })
    
 
 #用户登出
@@ -102,7 +102,7 @@ def logout():
             #'user': user.format()
         })
     except Exception as e:
-        jsonify({
+        return jsonify({
             'Success': False,
             'Info': repr(e)
         })
@@ -149,25 +149,26 @@ def change_profile(user_id):
             'user': user.format()
         })
     except Exception as e:
-        jsonify({
+        db.session.rollback()
+        return jsonify({
             'Success': False,
             'Info': repr(e)
         })
-        db.session.rollback()
 
 
 #获取个人信息
-@user_bp.route('/api/v1/user/get_profile',methods=['GET'])
+@user_bp.route('/api/v1/user/get_profile/<user_id>',methods=['GET'])
 def get_profile(user_id):
     try:
-        user_id = int(current_user.get_id())
+        if user_id is None:
+            user_id = int(current_user.get_id())
         profile = User.query.get(user_id)
         return jsonify({
             'Success':True,
             'Profile': profile.format()
         })
     except Exception as e:
-        jsonify({
+        return jsonify({
             'Success': False,
             'Info': repr(e)
         })
@@ -211,7 +212,7 @@ def change_address(address_id = 'null'):
             db.session.rollback()
             raise e
     except Exception as ee:
-        jsonify({
+        return jsonify({
             'Success': False,
             'Info': repr(ee)
         })
@@ -228,7 +229,7 @@ def delete_address(address_id):
             'deleted': address.format()
         })
     except Exception as e:
-        jsonify({
+        return jsonify({
             'Success': False,
             'Info': repr(e)
         })
@@ -246,7 +247,7 @@ def get_all_address(user_id):
             'marbres': formatted_address
         })
     except Exception as e:
-        jsonify({
+        return jsonify({
             'Success': False,
             'Info': repr(e)
         })
@@ -267,7 +268,7 @@ def set_default_address(user_id):
             'user': user.format()
         })
     except Exception as e:
-        jsonify({
+        return jsonify({
             'Success': False,
             'Info': repr(e)
         })
