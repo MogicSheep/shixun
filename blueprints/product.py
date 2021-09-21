@@ -73,7 +73,7 @@ def add_product():
         # new_tags = pickle.dumps(list(request.form.get('tags')))
         new_tags = request.form.get('tags')
         # TODO : user id!
-        new_seller = 123
+        new_seller = int(current_user.get_id())
         new_title = str(request.form.get('title'))
         new_commodity = Commodity(price = new_price, title = new_title, content = new_content,
                 tag = new_tags, seller = new_seller)
