@@ -55,7 +55,7 @@ def register():
 #用户登录
 @user_bp.route('/api/v1/user/login', methods = ['POST'])
 def login():
-    #try:
+    try:
         if current_user.is_authenticated:
             return jsonify({
                     'Success': False,
@@ -85,11 +85,11 @@ def login():
             'Info':'user is not registed',
             'user': user.format()
         })
-    # except Exception as e:
-    #     return jsonify({
-    #         'Success': False,
-    #         'Info': repr(e)
-    #     })
+    except Exception as e:
+        return jsonify({
+            'Success': False,
+            'Info': repr(e)
+        })
    
 
 #用户登出
@@ -158,6 +158,7 @@ def change_profile(user_id):
 
 
 #获取个人信息
+@user_bp.route('/api/v1/user/get_profile/',defaults={'user_id':None},methods=['GET'])
 @user_bp.route('/api/v1/user/get_profile/<user_id>',methods=['GET'])
 def get_profile(user_id):
     try:

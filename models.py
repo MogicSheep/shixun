@@ -103,7 +103,7 @@ class Commodity(db.Model):
     __tablename__ = "commodity"
 
     id = db.Column(db.Integer, primary_key=True)
-    price = db.Column(db.Integer, nullable=False,)
+    price = db.Column(db.Float, nullable=False,)
     title = db.Column(db.String(100), nullable=False,)
     content = db.Column(
         db.String(1000), nullable=False,
