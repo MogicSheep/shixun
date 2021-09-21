@@ -229,15 +229,17 @@ class User(db.Model, UserMixin):
         db.session.commit()
 
     def format(self):
-        return {
+        ret = {
             "id": self.id,
             "name": self.name,
             "region": self.region,
             "default_address": self.default_address,
             "sex": self.sex,
             "signature": self.signature,
-            "gravatar": str(base64.b64encode(self.gravatar))
+            "gravatar": self.gravatar
         }
+        
+        return ret
 
 
 class Message(db.Model):

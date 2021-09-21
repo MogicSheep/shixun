@@ -29,6 +29,7 @@ def show_commodity_info(commodity_id):
     for _, file in enumerate(photo_file):
         logger.info(str(base64.b64encode(file)))
         ret_dic[str(_)] = str(base64.b64encode(file))
+    ret_dic["num_of_pic"] = len(photo_file)
     return jsonify(ret_dic)
 
 #查看单个商品所有评论

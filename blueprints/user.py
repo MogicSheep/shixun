@@ -10,6 +10,7 @@ import logging
 from sqlalchemy import func
 user_bp = Blueprint('user', __name__)
 logger = logging.getLogger(__name__)
+import base64
 
 
 #用户注册
@@ -160,12 +161,16 @@ def change_profile(user_id):
 def get_profile(user_id):
     try:
         profile = User.query.get(user_id)
+        ret = profile.format()
+        if profile.gravatar is not None:
+            photo = Image.query.filter(Image.id == profile.gravatar).first()
+            ret["gravatar"] = str(base64.b64encode(photo.content))
         return jsonify({
             'Success':True,
-            'Profile': profile.format()
+            'Profile': ret
         })
     except Exception as e:
-        jsonify({
+        return jsonify({
             'Success': False,
             'Info': repr(e)
         })
