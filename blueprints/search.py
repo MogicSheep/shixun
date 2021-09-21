@@ -13,8 +13,7 @@ search_bp = Blueprint('search', __name__)
 
 @search_bp.route('/api/v1/search/', methods = ['GET'])
 def search():
-    body = request.get_json()
-    content = body.get("content",None)
+    content = request.form.get("content",None)
     if content is None:
         content = " "
     items = Commodity.query.filter(Commodity.content.like("%"+content+"%"))
