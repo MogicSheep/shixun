@@ -193,7 +193,7 @@ class User(db.Model, UserMixin):
         db.String(50), nullable=True,
     )  # 用户昵称
     phone = db.Column(db.String(15), nullable=False)  # 用户手机
-    gravatar =db.Column(db.Integer, nullable=True) #用户的头像图片id
+    gravatar =db.Column(db.String(260), nullable=True) #用户的头像图片id
     region = db.Column(
         db.String(50), nullable=True,
     )  # 用户所在地区
