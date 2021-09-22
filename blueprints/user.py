@@ -129,7 +129,7 @@ def logout():
 #修改个人信息
 @user_bp.route('/api/v1/user/change_profile', methods = ['POST'])
 def change_profile():
-    #try:
+    try:
         if current_user.is_authenticated:
             new_name = request.form.get("name", None)
             new_position = request.form.get("position", None)
@@ -142,15 +142,15 @@ def change_profile():
                 user.name = str(new_name)
             if new_position != None:
                 user.region = str(new_position)
-            if user.sex != None:
+            if new_sex != None:
                 user.sex = int(new_sex)
-            if user.signature != None:
+            if new_signature != None:
                 user.signature = str(new_signature)
-            if user.gravatar != None:
+            if new_gravatar != None:
                 user.gravatar = int(new_gravatar)
             user.insert()
             db.session.commit()
-            print(new_sex)
+            #print(new_sex)
             return jsonify({
                 'Success': True,
                 'user': user.format()
@@ -160,12 +160,12 @@ def change_profile():
             'Success': False,
             'Info': "user not login"
         })
-    #except Exception as e:
-        db.session.rollback()
+    except Exception as e:
         return jsonify({
             'Success': False,
             'Info': repr(e)
         })
+        db.session.rollback()
 
 
 #获取个人信息
