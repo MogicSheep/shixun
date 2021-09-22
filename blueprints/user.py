@@ -129,33 +129,38 @@ def logout():
 #修改个人信息
 @user_bp.route('/api/v1/user/change_profile', methods = ['POST'])
 def change_profile():
-    try:
-        new_name = str(request.form.get("name", None))
-        new_position = str(request.form.get("position", None))
-        new_sex = int(request.form.get("sex", None))
-        new_signature = str(request.form.get("signature", None))
-        new_gravatar = int(request.form.get("gravatar", None))
-
-        user_id = int(current_user.get_id())
-        user = User.query.get(user_id)
-        if new_name != "null":
-            user.name = new_name
-        if new_position != "null":
-            user.region = new_position
-        if user.sex != -1:
-            user.sex = new_sex
-        if user.signature != "null":
-            user.signature = new_signature
-        if user.gravatar != -1:
-            user.gravatar = new_gravatar
-        user.insert()
-        db.session.commit()
-        print(new_sex)
-        return jsonify({
-            'Success': True,
-            'user': user.format()
+    #try:
+        if current_user.is_authenticated:
+            new_name = request.form.get("name", None)
+            new_position = request.form.get("position", None)
+            new_sex = request.form.get("sex",None)
+            new_signature = request.form.get("signature", None)
+            new_gravatar = request.form.get("gravatar",None)
+            user_id = int(current_user.get_id())
+            user = User.query.get(user_id)
+            if new_name != None:
+                user.name = str(new_name)
+            if new_position != None:
+                user.region = str(new_position)
+            if user.sex != None:
+                user.sex = int(new_sex)
+            if user.signature != None:
+                user.signature = str(new_signature)
+            if user.gravatar != None:
+                user.gravatar = int(new_gravatar)
+            user.insert()
+            db.session.commit()
+            print(new_sex)
+            return jsonify({
+                'Success': True,
+                'user': user.format()
+            })
+        else:
+            return jsonify({
+            'Success': False,
+            'Info': "user not login"
         })
-    except Exception as e:
+    #except Exception as e:
         db.session.rollback()
         return jsonify({
             'Success': False,
