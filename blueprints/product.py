@@ -11,6 +11,7 @@ from models import db, Address,User, setup_db, Commodity, Image, Comment
 from flask_login import current_user, login_user, logout_user, login_required
 import logging
 import base64
+from add_feature import save_feature
 
 product_bp = Blueprint('product', __name__)
 logger = logging.getLogger(__name__)
@@ -80,12 +81,8 @@ def add_comment():
         product_id = request.form.get("commodity",None)
         content = request.form.get("content",None)
         comment = Comment(commodity = product_id, content = content)
-        try:
-            comment.insert()
-        except:
-            logger.exception('Add commedity failed!')
-            success = False
-            db.session.rollback()    
+        comment.insert()
+        db.session.commit()
         return jsonify({
             'Success':True,
             'Comment': comment.id
@@ -123,6 +120,7 @@ def add_product():
             logger.debug("url: %d" % int(url))
             logger.debug(str(row))
             row.commodity = new_commodity.id
+            save_feature(row.content, int(row.id))
         db.session.commit()
     except Exception as e:
         logger.exception('Add commedity failed!')
