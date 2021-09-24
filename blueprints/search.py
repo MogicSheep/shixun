@@ -29,9 +29,18 @@ def image(image_url):
     try:
         img_file = Image.query.filter(Image.id == image_url).first()
         res = search_img(img_file.content, 1000)
+        reslis = []
+        tmp = set()
+        for row in res:
+            row = int(row[2:-1])
+            tar = Image.query.filter(Image.id == row).first()
+            if tar.commodity not in tmp:
+                reslis.append(tar.commodity)
+                tmp.add(tar.commodity)
+
         return jsonify({
             'Success': True,
-            'items': res
+            'items': reslis
         })
     except Exception as e:
         logger.exception('image search!')

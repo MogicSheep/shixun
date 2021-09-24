@@ -84,3 +84,67 @@ OSError: Unable to open file (unable to open file: name = 'feature/product.h5', 
 2021-09-24 17:10:43,101 - tensorflow - [WARNING]: 6 out of the last 11 calls to <function Model.make_predict_function.<locals>.predict_function at 0x0000025CB1E27F70> triggered tf.function retracing. Tracing is expensive and the excessive number of tracings could be due to (1) creating @tf.function repeatedly in a loop, (2) passing tensors with different shapes, (3) passing Python objects instead of tensors. For (1), please define your @tf.function outside of the loop. For (2), @tf.function has experimental_relax_shapes=True option that relaxes argument shapes that can avoid unnecessary retracing. For (3), please refer to https://www.tensorflow.org/guide/function#controlling_retracing and https://www.tensorflow.org/api_docs/python/tf/function for  more details.
 2021-09-24 17:10:44,138 - werkzeug - [INFO]: 127.0.0.1 - - [24/Sep/2021 17:10:44] "POST /api/v1/product/add HTTP/1.1" 200 -
 2021-09-24 17:10:48,780 - werkzeug - [INFO]: 127.0.0.1 - - [24/Sep/2021 17:10:48] "GET /api/v1/search/image/23 HTTP/1.1" 200 -
+2021-09-24 17:48:05,826 - werkzeug - [INFO]:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2021-09-24 17:48:18,613 - blueprints.search - [ERROR]: image search!
+Traceback (most recent call last):
+  File "D:\TJU\大四上\实训\shixun\blueprints\search.py", line 36, in image
+    reslis.append(tar.commodity)
+AttributeError: 'NoneType' object has no attribute 'commodity'
+2021-09-24 17:48:18,683 - werkzeug - [INFO]: 127.0.0.1 - - [24/Sep/2021 17:48:18] "GET /api/v1/search/image/23 HTTP/1.1" 200 -
+2021-09-24 17:49:19,960 - werkzeug - [INFO]:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2021-09-24 17:49:21,469 - blueprints.search - [ERROR]: image search!
+Traceback (most recent call last):
+  File "D:\TJU\大四上\实训\shixun\blueprints\search.py", line 34, in image
+    row = row.decode('UTF-8')
+AttributeError: 'str' object has no attribute 'decode'
+2021-09-24 17:49:21,539 - werkzeug - [INFO]: 127.0.0.1 - - [24/Sep/2021 17:49:21] "GET /api/v1/search/image/23 HTTP/1.1" 200 -
+2021-09-24 17:50:56,914 - werkzeug - [INFO]:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2021-09-24 17:51:01,554 - blueprints.search - [ERROR]: image search!
+Traceback (most recent call last):
+  File "D:\TJU\大四上\实训\shixun\blueprints\search.py", line 35, in image
+    row = int(row)
+ValueError: invalid literal for int() with base 10: "b'26'"
+2021-09-24 17:51:01,629 - werkzeug - [INFO]: 127.0.0.1 - - [24/Sep/2021 17:51:01] "GET /api/v1/search/image/23 HTTP/1.1" 200 -
+2021-09-24 18:01:57,837 - werkzeug - [INFO]:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2021-09-24 18:01:59,531 - blueprints.search - [ERROR]: image search!
+Traceback (most recent call last):
+  File "D:\TJU\大四上\实训\shixun\blueprints\search.py", line 35, in image
+    row = int.from_bytes(row,'little')
+TypeError: cannot convert 'str' object to bytes
+2021-09-24 18:01:59,654 - werkzeug - [INFO]: 127.0.0.1 - - [24/Sep/2021 18:01:59] "GET /api/v1/search/image/23 HTTP/1.1" 200 -
+2021-09-24 18:03:14,805 - werkzeug - [INFO]:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2021-09-24 18:03:17,280 - blueprints.search - [ERROR]: image search!
+Traceback (most recent call last):
+  File "D:\TJU\大四上\实训\shixun\blueprints\search.py", line 40, in image
+    reslis.append(tar.commodity)
+AttributeError: 'NoneType' object has no attribute 'commodity'
+2021-09-24 18:03:17,351 - werkzeug - [INFO]: 127.0.0.1 - - [24/Sep/2021 18:03:17] "GET /api/v1/search/image/23 HTTP/1.1" 200 -
+2021-09-24 18:04:09,286 - werkzeug - [INFO]:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2021-09-24 18:04:10,873 - blueprints.search - [ERROR]: image search!
+Traceback (most recent call last):
+  File "D:\TJU\大四上\实训\shixun\blueprints\search.py", line 40, in image
+    reslis.append(tar.commodity)
+AttributeError: 'NoneType' object has no attribute 'commodity'
+2021-09-24 18:04:10,941 - werkzeug - [INFO]: 127.0.0.1 - - [24/Sep/2021 18:04:10] "GET /api/v1/search/image/23 HTTP/1.1" 200 -
+2021-09-24 18:04:35,391 - werkzeug - [INFO]:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2021-09-24 18:04:37,019 - blueprints.search - [ERROR]: image search!
+Traceback (most recent call last):
+  File "D:\TJU\大四上\实训\shixun\blueprints\search.py", line 40, in image
+    reslis.append(tar.commodity)
+AttributeError: 'NoneType' object has no attribute 'commodity'
+2021-09-24 18:04:37,090 - werkzeug - [INFO]: 127.0.0.1 - - [24/Sep/2021 18:04:37] "GET /api/v1/search/image/23 HTTP/1.1" 200 -
+2021-09-24 18:05:03,096 - werkzeug - [INFO]:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2021-09-24 18:05:05,933 - werkzeug - [INFO]: 127.0.0.1 - - [24/Sep/2021 18:05:05] "GET /api/v1/search/image/23 HTTP/1.1" 200 -
+2021-09-24 18:08:34,120 - werkzeug - [INFO]:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2021-09-24 18:08:36,187 - werkzeug - [INFO]: 127.0.0.1 - - [24/Sep/2021 18:08:36] "GET /api/v1/search/image/23 HTTP/1.1" 200 -
+2021-09-24 18:09:09,604 - werkzeug - [INFO]:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2021-09-24 18:09:11,193 - blueprints.search - [ERROR]: image search!
+Traceback (most recent call last):
+  File "D:\TJU\大四上\实训\shixun\blueprints\search.py", line 42, in image
+    tmp += tar
+TypeError: unsupported operand type(s) for +=: 'set' and 'Image'
+2021-09-24 18:09:11,262 - werkzeug - [INFO]: 127.0.0.1 - - [24/Sep/2021 18:09:11] "GET /api/v1/search/image/23 HTTP/1.1" 200 -
+2021-09-24 18:09:44,790 - werkzeug - [INFO]:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2021-09-24 18:09:49,456 - werkzeug - [INFO]: 127.0.0.1 - - [24/Sep/2021 18:09:49] "GET /api/v1/search/image/23 HTTP/1.1" 200 -
+2021-09-24 18:10:25,205 - werkzeug - [INFO]:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2021-09-24 18:10:27,195 - werkzeug - [INFO]: 127.0.0.1 - - [24/Sep/2021 18:10:27] "GET /api/v1/search/image/23 HTTP/1.1" 200 -
