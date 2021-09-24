@@ -15,10 +15,11 @@
 * python manage.py db upgrade
 
 
-部署
-cd shixun
-. venv/bin/activate
-gunicorn -w 4 -b 127.0.0.1:5500 app:app
+## 部署
+
+* cd shixun
+* . venv/bin/activate
+* gunicorn -w 4 -b 127.0.0.1:5500 app:app
 echo "server {
     listen 8080; 
     server_name 118.195.233.143; 
@@ -33,5 +34,5 @@ echo "server {
 
   }" > /etc/nginx/conf.d/default.conf
 
-启动后 开启另一个服务器链接，输入：
-sudo service nginx start
+* 启动后 开启另一个服务器链接，输入：
+* sudo service nginx start
