@@ -254,7 +254,7 @@ def delete_address(address_id):
 
 #获取所有收货地址
 @user_bp.route('/api/v1/user/get_all_address',methods=['GET'])
-def get_all_address(user_id):
+def get_all_address():
     try:
         user_id = int(current_user.get_id())
         addresses = Address.query.filter(Address.user == user_id).all()
@@ -271,10 +271,12 @@ def get_all_address(user_id):
 
 
 #设置默认收货地址
-@user_bp.route('/api/v1/user/set_default_address',methods=['POST'])
+@user_bp.route('/api/v1/user/set_default_address',defaults={'user_id':None},methods=['POST'])
+@user_bp.route('/api/v1/user/set_default_address/<user_id>',methods=['POST'])
 def set_default_address(user_id):
     try:
-        user_id = int(current_user.get_id())
+        if user_id is None:
+            user_id = int(current_user.get_id())
         new_id = int(request.form.get("id",None))
         user = User.query.get(user_id)
         user.default_address = new_id
