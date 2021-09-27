@@ -12,9 +12,8 @@ import logging
 search_bp = Blueprint('search', __name__)
 logger = logging.getLogger(__name__)
 
-@search_bp.route('/api/v1/search/', methods = ['GET'])
-def search():
-    content = request.form.get("content",None)
+@search_bp.route('/api/v1/search/<content>', methods = ['GET'])
+def search(content):
     if content is None:
         content = " "
     items = Commodity.query.filter(Commodity.content.like("%"+content+"%"))

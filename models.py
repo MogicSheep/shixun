@@ -152,7 +152,8 @@ class Order(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     courier = db.Column(db.String(50), nullable=False,)
-    status = db.Column(db.Integer, nullable=False,)
+    isdeliver = db.Column(db.Integer, nullable=False,)
+    istake = db.Column(db.Integer, nullable=False,)
     seller = db.Column(db.Integer, nullable=False,)
     buyer = db.Column(db.Integer, nullable=False,)
     destination = db.Column(
@@ -182,6 +183,8 @@ class Order(db.Model):
             "commodity": self.commodity,
             "destination": self.destination,
             "createat": self.createat,
+            "isdeliver": self.isdeliver,
+            "istake": self.take
         }
 
 
