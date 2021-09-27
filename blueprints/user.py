@@ -206,7 +206,7 @@ def change_address(address_id = 'null'):
                 address.phone = str(request.form.get("phone_number"))
             if(request.form.get("city")):
                 address.city = str(request.form.get("city"))
-            if(request.form.get("content")):
+            if(request.form.get("detailed_address")):
                 address.content = str(request.form.get("detailed_address"))
         else:
             # new_id = Address.session.query(func.max(Address.id)).first()
@@ -242,7 +242,7 @@ def delete_address(address_id):
         address = Address.query.get(address_id)
         address.delete()
         return jsonify({
-            'success': True,
+            'Success': True,
             'deleted': address.format()
         })
     except Exception as e:
