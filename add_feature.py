@@ -5,7 +5,9 @@ import numpy as np
 from extract_cnn_vgg16_keras import VGGNet
 from PIL import Image
 import io
+import logging
 
+logger = logging.getLogger(__name__)
 
 def create_feature_file(feat,name):
     h5f = h5py.File('feature/product.h5','w')
@@ -49,7 +51,7 @@ def save_feature(img_file, id):
         feat = np.array(feat)
         create_feature_file_2(feat,name)
     os.remove(tmp)
-    print("feature saved")
+    logger.info("feature saved")
 
 if __name__ == "__main__":
     img_file,id = sys.argv[1], sys.argv[2]
@@ -57,9 +59,9 @@ if __name__ == "__main__":
 
 
     # 以下部分为测试信息，查看新商品图片特征和名称是否插入h5文件，测试通过后可删除以下内容
-    h5f = h5py.File('feature/product.h5','r')
-    feat = h5f['dataset_1'][:]
-    name = h5f['dataset_2'][:]
-    h5f.close()
-    print(feat)
-    print(name)
+    # h5f = h5py.File('feature/product.h5','r')
+    # feat = h5f['dataset_1'][:]
+    # name = h5f['dataset_2'][:]
+    # h5f.close()
+    # logger.info(feat)
+    # logger.info(name)

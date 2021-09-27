@@ -5,7 +5,9 @@ import numpy as np
 import os
 
 from extract_cnn_vgg16_keras import VGGNet
+import logging
 
+logger = logging.getLogger(__name__)
 def get_imlist(path):
     return [os.path.join(path, f) for f in os.listdir(path) if f.endswith('.jpg')]
 
@@ -20,7 +22,7 @@ model = VGGNet()
 for i, img_path in enumerate(img_list):
     norm_feat = model.vgg_extract_feat(img_path)
     img_name = os.path.split(img_path)[1]
-    print(img_name)
+    logger.info(img_name)
     feats.append(norm_feat)
     names.append(img_name)
 

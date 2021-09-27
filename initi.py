@@ -8,4 +8,4 @@ from search_image import search
 
 with open('./test.jpeg', 'rb') as f:
     res = search(f.read(), 10)
-    print(int(float(res[0])))
+    # print(int(float(res[0])))

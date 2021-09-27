@@ -9,6 +9,9 @@ from extract_cnn_vgg16_keras import VGGNet
 import sys
 from PIL import Image
 import io,os
+import logging
+
+logger = logging.getLogger(__name__)
 
 def search_img(img_file,number):
     '''
@@ -63,8 +66,8 @@ def search_img(img_file,number):
     imlist = []
     for i, index in enumerate(rank_ID[0:maxres]):
         imlist.append(str(imgIds[index]))
-        print("image ids: " + str(imgIds[index]) + " scores: %f" % rank_score[i])
-    print("top %d images in order are: " % maxres, imlist)
+        logger.info("image ids: " + str(imgIds[index]) + " scores: %f" % rank_score[i])
+    logger.info("top %d images in order are: " % maxres, imlist)
     os.remove(tmp)
     # 显示检索图像
     # for i,im in enumerate(imlist):

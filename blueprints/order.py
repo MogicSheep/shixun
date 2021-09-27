@@ -11,7 +11,9 @@ from werkzeug.wrappers import PlainRequest
 from flask_cors import CORS
 from models import Commodity, db, Address,User, setup_db, Order, Image
 from flask_login import current_user, login_user, logout_user, login_required
+import logging
 
+logger = logging.getLogger(__name__)
 
 order_bp = Blueprint('order', __name__)
 
@@ -40,7 +42,7 @@ def order_buy(user_id):
     try:
         order.insert()
     except:
-        print("Error")
+        logger.info("Error")
     return jsonify({
         'Success':True,
         'Order': order.format
