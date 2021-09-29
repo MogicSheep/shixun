@@ -78,9 +78,10 @@ def show_all(user_id):
 @product_bp.route('/api/v1/product/add_comment',methods=['POST'])
 def add_comment():
     try:
+        user_id = current_user.get_id()
         product_id = request.form.get("commodity",None)
         content = request.form.get("content",None)
-        comment = Comment(commodity = product_id, content = content)
+        comment = Comment(user = user_id, commodity = product_id, content = content)
         comment.insert()
         db.session.commit()
         return jsonify({

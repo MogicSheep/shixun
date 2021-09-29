@@ -77,6 +77,7 @@ class Comment(db.Model):
     __tablename__ = "comment"
 
     id = db.Column(db.Integer, primary_key=True)
+    user = db.Column(db.Integer, nullable=False)
     commodity = db.Column(db.Integer, nullable=False,)
     content = db.Column(
         db.String(1000), nullable=False,
@@ -97,7 +98,7 @@ class Comment(db.Model):
         db.session.commit()
 
     def format(self):
-        return {"id": self.id, "commodity": self.commodity, "content": self.content}
+        return {"id": self.id, "user": self.user, "commodity": self.commodity, "content": self.content}
 
 
 class Commodity(db.Model):
