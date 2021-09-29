@@ -269,6 +269,21 @@ def get_all_address():
             'Info': repr(e)
         })
 
+#根据id获取单个收货地址
+@user_bp.route('/api/v1/user/get_address/<id>',methods=['GET'])
+def get_address(id):
+    try:
+        address = Address.query.filter(Address.id == id).first() 
+        return jsonify({
+            'Success':True,
+            'address': address.format()
+        })
+    except Exception as e:
+        return jsonify({
+            'Success': False,
+            'Info': repr(e)
+        })
+
 
 #设置默认收货地址
 @user_bp.route('/api/v1/user/set_default_address',defaults={'user_id':None},methods=['POST'])

@@ -23,14 +23,31 @@ order_bp = Blueprint('order', __name__)
 def check_all_order(user_id):
     try:
         orders = Order.query.filter(Order.buyer == user_id)
-        formatted_orders = [orders.format() for order in orders]
+        formatted_orders = [order.format() for order in orders]
         return jsonify({
             'Success':True,
             'orders': formatted_orders
         })
-    except:
+    except Exception as e:
         return jsonify({
-            'Success':False
+            'Success':False,
+            'info': repr(e)
+        })
+
+#查看作为卖家的订单
+@order_bp.route('/api/v1/order/sale/<user_id>', methods = ['GET'])
+def check_all_sale_order(user_id):
+    try:
+        orders = Order.query.filter(Order.seller == user_id)
+        formatted_orders = [order.format() for order in orders]
+        return jsonify({
+            'Success': True,
+            'orders': formatted_orders
+        })
+    except Exception as e:
+        return jsonify({
+            'Success':False,
+            'info': repr(e)
         })
 
 #购买（发起订单）
@@ -39,12 +56,15 @@ def order_buy(user_id):
     try:
         product_id = request.form.get("commodity",None)
         address_id = request.form.get("address_id",None)
-        new_id = Order.query(func.max(Order.id)).first() + 1
+        max_order_id = db.session.query(func.max(Order.id)).first()[0]
+        new_id = (0 if max_order_id == None else max_order_id)  + 1
+        print(new_id)
         create_time = func.now()
         update_time = func.now()
-        order = Order(id = new_id,buyer = user_id,destination = address_id,\
+        seller_id = Commodity.query.filter(Commodity.id == product_id).first().seller
+        order = Order(id = new_id,buyer = user_id,destination = address_id, seller=seller_id,\
             commodity = product_id,createat = create_time,updateat = update_time,\
-                isdeliver=-1,istake=-1)
+                status = 0)
         order.insert()
         return jsonify({
             'Success':True,
@@ -78,7 +98,7 @@ def check_single_order(order_id):
 def check_deliver(order_id):
     try:
         single_order = Order.query.get(order_id)
-        single_order.isdeliver = 1
+        single_order.status = 1
         single_order.insert()
         single_order.update()
     except:
@@ -91,7 +111,7 @@ def check_deliver(order_id):
 def take_order(order_id):
     try:
         single_order = Order.query.get(order_id)
-        single_order.take = 1
+        single_order.status = 2
         single_order.insert()
         single_order.update()
     except:

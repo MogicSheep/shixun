@@ -1,5 +1,6 @@
 # coding: utf-8
 from sqlalchemy import Column, String, create_engine, Integer, ForeignKey
+from sqlalchemy.sql.expression import nullslast
 from werkzeug.exceptions import default_exceptions
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -151,9 +152,9 @@ class Order(db.Model):
     __tablename__ = "order"
 
     id = db.Column(db.Integer, primary_key=True)
-    courier = db.Column(db.String(50), nullable=False,)
-    isdeliver = db.Column(db.Integer, nullable=False,)
-    istake = db.Column(db.Integer, nullable=False,)
+    courier = db.Column(db.String(50), nullable=True,)
+    # status 的值可以为0（已下单、代发货）,1（已发货、代收货）, 2（交易完成）
+    status = db.Column(db.Integer, nullable=False,)
     seller = db.Column(db.Integer, nullable=False,)
     buyer = db.Column(db.Integer, nullable=False,)
     destination = db.Column(
@@ -182,9 +183,9 @@ class Order(db.Model):
             "buyer": self.buyer,
             "commodity": self.commodity,
             "destination": self.destination,
-            "createat": self.createat,
-            "isdeliver": self.isdeliver,
-            "istake": self.take
+            "createat": self.createat.strftime("%Y-%m-%d %H:%M:%S"),
+            "status": self.status,
+            "courier": self.courier,
         }
 
 
